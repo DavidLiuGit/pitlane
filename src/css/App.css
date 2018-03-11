@@ -1,0 +1,86 @@
+.App {
+	text-align: center;
+}
+div#APP-BODY {
+	max-width: 1000px;
+	display: inline-block;
+}
+
+.App-logo {
+	animation: App-logo-spin infinite 20s linear;
+	height: 80px;
+}
+
+.App-header {
+	background-color: #222239;
+	height: 100vh;
+	padding: 0px 20px;
+	color: white;
+	text-align: center;
+}
+
+.App-header h1 {
+	font-size: 8em;
+	font-weight: 300;
+}
+
+@keyframes App-logo-spin {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+}
+
+body {
+	font-family: 'Open Sans', 'Segoe UI', Geneva, Verdana, sans-serif;
+	font-size: 16px;
+}
+
+
+/******************************************************************************
+*	Containers
+******************************************************************************/
+div.component {
+	margin: 20px 0;
+	padding: 20px 20px;
+	width: 600px;
+}
+
+
+
+/******************************************************************************
+*	Objects
+******************************************************************************/
+a.button {
+	font-size: 1.5em;
+	color: #fff;
+	background-color: #9B399C;
+	padding: 0.75em 50px;
+	border-radius: 10px;
+	text-decoration: none;
+}
+
+
+
+/******************************************************************************
+*	Text
+******************************************************************************/
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Open Sans', 'Segoe UI', Geneva, Verdana, sans-serif;
+}
+
+h1 {
+	margin: 0;
+	padding: 0.5em;
+}
+
+h2 {
+	font-weight: 400;
+	font-size: 2em;
+}
+
+
+/******************************************************************************
+*	Images/SVGs
+******************************************************************************/
+.svgLogo {
+	color: #fff;	
+}
