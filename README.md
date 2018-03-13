@@ -11,6 +11,9 @@ npm install react
 
 # Material-UI (for React)
 npm install --save material-ui@next
+
+# Axios - Asynchronous HTTP requests
+npm install --save axios
 ```
 
 Backend

@@ -16,6 +16,9 @@ div#APP-BODY {
 	padding: 0px 20px;
 	color: white;
 	text-align: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 
 .App-header h1 {
@@ -74,12 +77,13 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
 	margin: 0;
-	padding: 0.5em;
 }
 
 h2 {
-	font-weight: 400;
+	color: #000;
+	font-weight: 300;
 	font-size: 2em;
+	padding: 0.25em;
 }
 
 
