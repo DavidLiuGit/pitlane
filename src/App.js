@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import Button from 'material-ui/Button';
-//import logo from './logo.svg';
 
 // stylesheets
 import './css/App.css';
 import './css/responsive.css';
+
+// components
+//import { Navigator } from './main-body';
+
+
+// img
+import imgRace from './img/race.jpg';
 
 
 
@@ -15,7 +21,7 @@ class App extends Component {
 
         <div className="App-header">
           <h1>Pitlane</h1>
-					<a href ="#APP-BODY">
+					<a href="#APP-BODY">
 						<Button color="primary" variant="raised">Start</Button>
 					</a>
         </div>
@@ -49,20 +55,21 @@ class Navigator extends Component {
 				<h2>View stats by</h2>
 				<div id="navigator-card-container" className="flex-container">
 					<div className="flex-1-3">
-						Race
+						<img src={imgRace} alt="race" className="navigator-img"></img>
+						<h3>Race</h3>
 					</div>
 					<div className="flex-1-3">
-						Driver
+						<img src={imgRace} alt="race" className="navigator-img"></img>
+						<h3>Driver</h3>
 					</div>
 					<div className="flex-1-3">
-						Team
+						<img src={imgRace} alt="race" className="navigator-img"></img>
+						<h3>Team</h3>
 					</div>
 				</div>
 			</div>
 		);
 	}
 }
-
-
 
 export default App;
