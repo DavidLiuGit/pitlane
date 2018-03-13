@@ -12,6 +12,8 @@ import './css/responsive.css';
 
 // img
 import imgRace from './img/race.jpg';
+import imgVettel from './img/vettel.jpg';
+import imgRedBull from './img/redbull.jpg';
 
 
 
@@ -65,11 +67,11 @@ class Navigator extends Component {
 						<h3>Race</h3>
 					</div>
 					<div className="flex-1-3">
-						<img src={imgRace} alt="race" className="navigator-img"></img>
+						<img src={imgVettel} alt="race" className="navigator-img"></img>
 						<h3>Driver</h3>
 					</div>
 					<div className="flex-1-3">
-						<img src={imgRace} alt="race" className="navigator-img"></img>
+						<img src={imgRedBull} alt="race" className="navigator-img"></img>
 						<h3>Team</h3> 
 					</div>
 				</div>
