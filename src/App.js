@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Button from 'material-ui/Button';
-import { axios } from 'axios';
+import axios from 'axios';
 
 // stylesheets
 import './css/App.css';
@@ -16,6 +16,8 @@ import imgVettel from './img/vettel.jpg';
 import imgRedBull from './img/redbull.jpg';
 
 
+// global constants - fuck you I use constants if I want to
+var httpBaseUrl = "http://ergast.com/api/f1/";
 
 class App extends Component {
 	 render() {			
@@ -85,14 +87,54 @@ class Navigator extends Component {
 class LastRace extends Component {
 	constructor () {
 		super();
-		this.state = { "race": {} };
+
+		var driver = {				// driver data template
+			"number": "",
+			"Driver": {
+				"code": "",
+				"givenName": "",
+				"familyName": "",
+			}
+		}
+
+		var constructor = {		// constructor as in racing team, not that javascript shit
+			"name": "",
+		}
+
+		this.state = { 			// these variables will be used in rendering; initial values listed below
+			"race":{
+				"raceName": 		"Loading...",
+				"circuitName" : "",
+				"date": 				"",
+				"results": [
+					{driver,constructor},			// reserve 3 data slots for drivers
+					{driver,constructor},
+					{driver,constructor},
+				]
+			}
+		};
+
 	}
 
 	render() {
 		return (
 			<div>
 				<h2>Last Race</h2>
+				<span>Hello {this.state.race.raceName}</span>
 			</div>
+		);
+	}
+
+	componentDidMount () {
+		var url = httpBaseUrl + "current/last/results.json?limit=3";
+		axios.get ( url ).then(
+			res => {
+				const results = res.data.MRData.RaceTable.Races["0"];
+				this.setState ( {race: results} );
+				console.log ( results );
+			}
+		).catch(
+			err => { console.error(err); }
 		);
 	}
 }
