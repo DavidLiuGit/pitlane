@@ -103,9 +103,9 @@ class LastRace extends Component {
 
 		this.state = { 			// these variables will be used in rendering; initial values listed below
 			"race":{
-				"raceName": 		"Loading...",
-				"circuitName" : "",
-				"date": 				"",
+				"raceName": "Loading...",
+				"Circuit" : { "circuitName": "" },
+				"date": 		"",
 				"results": [
 					{driver,constructor},			// reserve 3 data slots for drivers
 					{driver,constructor},
@@ -120,7 +120,20 @@ class LastRace extends Component {
 		return (
 			<div>
 				<h2>Last Race</h2>
-				<span>Hello {this.state.race.raceName}</span>
+				<div id="last-race-container" className="flex-container flex-space-between">
+
+					<div className="flex-1-2">
+						<h3>{this.state.race.raceName}</h3>
+						<h4>{this.state.race.Circuit.circuitName}</h4>
+						<span>{this.state.race.date}</span>
+					</div>
+
+					<div className="flex-1-2">
+						<h3>Standings</h3>
+
+					</div>
+
+				</div>
 			</div>
 		);
 	}
