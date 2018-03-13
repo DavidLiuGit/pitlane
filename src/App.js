@@ -53,7 +53,7 @@ class Navigator extends Component {
 		return (
 			<div>
 				<h2>View stats by</h2>
-				<div id="navigator-card-container" className="flex-container">
+				<div id="navigator-card-container" className="flex-container flex-space-between">
 					<div className="flex-1-3">
 						<img src={imgRace} alt="race" className="navigator-img"></img>
 						<h3>Race</h3>
