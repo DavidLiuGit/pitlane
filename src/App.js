@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
-import Button from 'material-ui/Button';
 import axios from 'axios';
+
+// Material UI
+import Button from 'material-ui/Button';
+import Avatar from 'material-ui/Avatar';
+//import {yellow600} from 'material-ui/styles/colors';
 
 // stylesheets
 import './css/App.css';
 import './css/responsive.css';
+import './css/animation.css';
 
 // components
 //import { Navigator } from './main-body';
-
 
 // img
 import imgRace from './img/race.jpg';
@@ -61,18 +65,20 @@ class Body extends Component {
 class Navigator extends Component {
 	render() {
 		return (
-			<div>
+			<div >
 				<h2>View stats by</h2>
-				<div id="navigator-card-container" className="flex-container flex-space-between">
-					<div className="flex-1-3">
-						<img src={imgRace} alt="race" className="navigator-img"></img>
-						<h3>Race</h3>
+				<div  className="flex-container flex-space-between component">
+					<div className="flex-1-3 navigator-box">
+						<a href="#last-race">
+							<img src={imgRace} alt="race" className="navigator-img"></img>
+							<h3>Race</h3>
+						</a>
 					</div>
-					<div className="flex-1-3">
-						<img src={imgVettel} alt="race" className="navigator-img"></img>
+					<div className="flex-1-3 navigator-box">
+						<img src={imgVettel} alt="race" className="navigator-img animated fadeIn delay-06s"></img>
 						<h3>Driver</h3>
 					</div>
-					<div className="flex-1-3">
+					<div className="flex-1-3 navigator-box">
 						<img src={imgRedBull} alt="race" className="navigator-img"></img>
 						<h3>Team</h3> 
 					</div>
@@ -88,17 +94,16 @@ class LastRace extends Component {
 	constructor () {
 		super();
 
-		var driver = {				// driver data template
-			"number": "",
-			"Driver": {
-				"code": "",
-				"givenName": "",
-				"familyName": "",
-			}
+		var Driver = {				// driver data template
+			"code": "",
+			"givenName": "",
+			"familyName": "",			
 		}
-
-		var constructor = {		// constructor as in racing team, not that javascript shit
+		var Constructor = {		// constructor as in racing team, not that javascript shit
 			"name": "",
+		}
+		var Time = {					// time object (given as a delta for positions 2+)
+			"time": ""
 		}
 
 		this.state = { 			// these variables will be used in rendering; initial values listed below
@@ -106,10 +111,10 @@ class LastRace extends Component {
 				"raceName": "Loading...",
 				"Circuit" : { "circuitName": "" },
 				"date": 		"",
-				"results": [
-					{driver,constructor},			// reserve 3 data slots for drivers
-					{driver,constructor},
-					{driver,constructor},
+				"Results": [
+					{Driver,Constructor,Time},			// reserve 3 data slots for drivers
+					{Driver,Constructor,Time},
+					{Driver,Constructor,Time},
 				]
 			}
 		};
@@ -117,20 +122,75 @@ class LastRace extends Component {
 	}
 
 	render() {
+		//console.log ( this.state );
 		return (
-			<div>
+			<div id="last-race">
 				<h2>Last Race</h2>
-				<div id="last-race-container" className="flex-container flex-space-between">
+				<div className="flex-container flex-space-between component">
 
-					<div className="flex-1-2">
+					<div className="race-description">
 						<h3>{this.state.race.raceName}</h3>
 						<h4>{this.state.race.Circuit.circuitName}</h4>
 						<span>{this.state.race.date}</span>
 					</div>
 
-					<div className="flex-1-2">
-						<h3>Standings</h3>
+					<div className="flex-grow-3">
+						<h3>Results</h3>
+						<div className="flex-container-row flex-space-between">
 
+							<div className="flex-grow-3 flex-container-row">
+								<div>
+									<Avatar>
+										{this.state.race.Results[0].number}
+									</Avatar>
+									<h3>1st</h3>
+								</div>
+								<span className="flex-grow-3 driver-info-card">
+									<h4>
+										{/*note that the trailing (breaking) space is added so that we can get line breaks properly*/}
+										{this.state.race.Results[0].Driver.givenName + " "}
+										{this.state.race.Results[0].Driver.familyName} 
+									</h4>
+									<h5>{this.state.race.Results[0].Constructor.name}</h5>
+									<p>{this.state.race.Results[0].Time.time}</p>
+								</span>
+							</div>
+
+							<div className="flex-grow-3 flex-container-row">
+								<div>
+									<Avatar>
+										{this.state.race.Results[1].number}
+									</Avatar>
+									<h3>2nd</h3>
+								</div>
+								<span className="flex-grow-3 driver-info-card">
+									<h4>
+										{this.state.race.Results[1].Driver.givenName + " "}
+										{this.state.race.Results[1].Driver.familyName} 
+									</h4>
+									<h5>{this.state.race.Results[1].Constructor.name}</h5>
+									<p>{this.state.race.Results[1].Time.time}</p>
+								</span>
+							</div>
+
+							<div className="flex-grow-3 flex-container-row">
+								<div>
+									<Avatar>
+										{this.state.race.Results[2].number}
+									</Avatar>
+									<h3>3rd</h3>
+								</div>
+								<span className="flex-grow-3 driver-info-card">
+									<h4>
+										{this.state.race.Results[2].Driver.givenName + " "}
+										{this.state.race.Results[2].Driver.familyName} 
+									</h4>
+									<h5>{this.state.race.Results[2].Constructor.name}</h5>
+									<p>{this.state.race.Results[2].Time.time}</p>
+								</span>
+							</div>
+
+						</div>
 					</div>
 
 				</div>

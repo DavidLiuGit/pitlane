@@ -13,7 +13,6 @@ div#APP-BODY {
 .App-header {
 	background-color: #222239;
 	height: 100vh;
-	padding: 0px 20px;
 	color: white;
 	text-align: center;
 	display: flex;
@@ -42,10 +41,21 @@ body {
 ******************************************************************************/
 div.component {
 	margin: 20px 0;
-	padding: 20px 20px;
-	width: 600px;
+	padding: 20px 0px;
 }
 
+.race-description {
+	text-align: left;
+}
+
+.driver-info-card {
+	margin: 0px 1.5em 1em 0.75em;
+	text-align: left;
+}
+.driver-info-card h4, .driver-info-card h5 { 
+	margin-top: 0;
+	text-align: left; 
+}
 
 
 /******************************************************************************
@@ -60,6 +70,9 @@ a.button {
 	text-decoration: none;
 }
 
+.navigator-box {
+	margin: 1.5em 0.75em;
+}
 .navigator-img {
 	max-width: 100%;
 	max-height:256px;
@@ -86,10 +99,25 @@ h2 {
 	padding: 0.25em;
 }
 
+h4 {
+	margin: 0.5em 0;
+}
+
+h5 {
+	color: #333;
+	font-weight: 400;
+	font-size: 1em;
+	margin: 0.5em 0;
+}
+
+a {
+	color: inherit;
+	text-decoration: inherit;
+}
 
 /******************************************************************************
 *	Images/SVGs
 ******************************************************************************/
 .svgLogo {
-	color: #fff;	
+	color: #fff;
 }
