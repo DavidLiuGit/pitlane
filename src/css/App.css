@@ -57,6 +57,31 @@ div.component {
 	text-align: left; 
 }
 
+/* navbar */
+#navbar {
+	overflow: hidden;
+	background-color: #222239;
+	position: -webkit-sticky;
+	position: sticky;
+	top: 0px;
+}
+#navbar svg { 
+	height: 4em;
+	padding: 0 1em;
+}
+#navbar span, #navbar svg {
+	float: left;
+	display: block;
+	color: #eee;
+}
+#navbar span {
+	font-size: 1.5em;
+	text-align: center;
+	padding: 0.75em;
+	text-decoration: none;
+}
+
+
 
 /******************************************************************************
 *	Objects
