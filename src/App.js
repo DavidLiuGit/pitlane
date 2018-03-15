@@ -34,13 +34,15 @@ class App extends Component {
       <div className="App">
 
 				<Switch>
-					<Route path="/driver" component={Navbar}/>
-					<Route path="/" component={Splash}/>
+					<Route exact path="/" component={Splash}/>
 				</Switch>
+
+				<Navbar />
 
 				<Switch>
 					<Route path="/driver" component={Driver}/>
 					<Route path="/" component={Body}/>
+					<Redirect to="/" />
 				</Switch>
 
       </div>
@@ -96,7 +98,7 @@ class Navigator extends Component {
 					</div>
 					<div className="flex-1-3 navigator-box">
 						<Link to="/driver">
-							<img src={imgVettel} alt="race" className="navigator-img animated fadeIn delay-06s"></img>
+							<img src={imgVettel} alt="race" className="navigator-img"></img>
 							<h3>Driver</h3>
 						</Link>
 					</div>

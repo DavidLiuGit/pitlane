@@ -20,7 +20,7 @@ div#APP-BODY {
 	justify-content: center;
 }
 
-.App-header h1 {
+.App-header h1, h1.page-title {
 	font-size: 8em;
 	font-weight: 300;
 }
@@ -64,6 +64,7 @@ div.component {
 	position: -webkit-sticky;
 	position: sticky;
 	top: 0px;
+	padding: 0 2%;
 }
 #navbar svg { 
 	height: 4em;
