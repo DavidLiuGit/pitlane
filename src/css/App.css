@@ -49,7 +49,7 @@ div.component {
 }
 
 .driver-info-card {
-	margin: 0px 1.5em 1em 0.75em;
+	margin: 0px 1em 1em 1em;
 	text-align: left;
 }
 .driver-info-card h4, .driver-info-card h5 { 

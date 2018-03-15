@@ -12,7 +12,7 @@ import imgRedBull from '../img/redbull.jpg';
 
 // common-objects
 import {
-	Driver, Constructor, Time, Timings, httpBaseUrl
+	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap
 }	from '../common-objects';
 
 
@@ -82,7 +82,7 @@ class FastestLapByDriver extends Component {
 				"Circuit" : { "circuitName": "" },
 				"date": 		"",
 				"Results": [
-					{Driver,Constructor,Time},			// reserve 3 data slots for drivers
+					{Driver,Constructor,Time,FastestLap},			// data slots
 				]
 			}
 		};
@@ -91,26 +91,24 @@ class FastestLapByDriver extends Component {
 			<li key={i}>{result.Driver.code}</li>
 		);
 	}
-	/*
-	driverList = this.state.race.Results ( result => {
-		<li> result.number  </li>
-	});*/
 
 	render(){
 		return(
 			<div id="fastest-lap-by-driver">
 				<h2>Fastest Lap of Each Driver</h2>
-				<ul>
-					{ 
-						this.driverList
-					}
-				</ul>
+				<div className="flex-container-row flex-space-between flex-wrap">
+					{this.state.race.Results.map ( (result, i) => 
+						<div key={'card'+i} className="driver-info-card">
+							<span key={"c"+i}>{result.Driver.code}</span>
+							<span key={'t'+i}>{result.FastestLap.Time.time}</span>
+						</div>
+					)}
+				</div>
 			</div>
 		);
 	}
 
 	componentDidMount () {
-		//var url = httpBaseUrl + "current/last/results.json?limit=3";
 		var url = httpBaseUrl + this.raceReqpath + this.resultReqPath;
 		axios.get ( url ).then(
 			res => {
