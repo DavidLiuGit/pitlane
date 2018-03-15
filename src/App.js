@@ -14,8 +14,13 @@ import './css/responsive.css';
 import './css/animation.css';
 
 // components
-import Driver from './component/driver';
+import DriverWrapper from './component/driver';
 import Navbar from './component/navbar';
+
+// common objects
+import {
+	Driver, Constructor, Time, httpBaseUrl
+}	from './common-objects';
 
 // img
 import imgRace from './img/race.jpg';
@@ -24,7 +29,7 @@ import imgRedBull from './img/redbull.jpg';
 
 
 // global constants - fuck you I use constants if I want to
-var httpBaseUrl = "http://ergast.com/api/f1/";
+//var httpBaseUrl = "http://ergast.com/api/f1/";
 
 
 class App extends Component {
@@ -40,7 +45,7 @@ class App extends Component {
 				<Navbar />
 
 				<Switch>
-					<Route path="/driver" component={Driver}/>
+					<Route path="/driver" component={DriverWrapper}/>
 					<Route path="/" component={Body}/>
 					<Redirect to="/" />
 				</Switch>
@@ -118,17 +123,13 @@ class LastRace extends Component {
 	constructor () {
 		super();
 
+		/*
 		var Driver = {				// driver data template
 			"code": "",
 			"givenName": "",
 			"familyName": "",			
-		}
-		var Constructor = {		// constructor as in racing team, not that javascript shit
-			"name": "",
-		}
-		var Time = {					// time object (given as a delta for positions 2+)
-			"time": ""
-		}
+		}*/
+
 
 		this.state = { 			// these variables will be used in rendering; initial values listed below
 			"race":{

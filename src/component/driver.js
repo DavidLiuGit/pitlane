@@ -2,6 +2,7 @@
 
 // React core
 import React, { Component } from 'react';
+import axios from 'axios';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
 
 // img
@@ -9,10 +10,16 @@ import imgRace from '../img/race.jpg';
 import imgVettel from '../img/vettel.jpg';
 import imgRedBull from '../img/redbull.jpg';
 
+// common-objects
+import {
+	Driver, Constructor, Time, Timings, httpBaseUrl
+}	from '../common-objects';
 
-var httpBaseUrl = "http://localhost";
 
-class Driver extends Component {
+//var httpBaseUrl = "http://localhost";
+
+
+class DriverWrapper extends Component {
 	render() {
 		return (
 			<div id="APP-BODY">
@@ -22,12 +29,16 @@ class Driver extends Component {
 				
 				<DriverNavigator />
 
+				<hr />
+
+				<FastestLapByDriver />
+
 			</div>
 		);
 	}
 }
 
-
+// provide navigation (using router Links)
 class DriverNavigator extends Component {
 	render() {
 		return (
@@ -35,9 +46,9 @@ class DriverNavigator extends Component {
 				<h2>View stats</h2>
 				<div  className="flex-container flex-space-between component">
 					<div className="flex-1-3 navigator-box">
-						<Link to="/#last-race">
-							<img src={imgRace} alt="race" className="navigator-img"></img>
-							<h3>Race</h3>
+						<Link to="/">
+							<img src={imgRace} alt="home" className="navigator-img"></img>
+							<h3>Home</h3>
 						</Link>
 					</div>
 					<div className="flex-1-3 navigator-box">
@@ -47,7 +58,7 @@ class DriverNavigator extends Component {
 						</Link>
 					</div>
 					<div className="flex-1-3 navigator-box">
-						<img src={imgRedBull} alt="race" className="navigator-img"></img>
+						<img src={imgRedBull} alt="team" className="navigator-img"></img>
 						<h3>Team</h3> 
 					</div>
 				</div>
@@ -56,4 +67,60 @@ class DriverNavigator extends Component {
 	}
 }
 
-export default Driver;
+
+// fastest lap by each driver, in a given race
+class FastestLapByDriver extends Component {
+	raceReqpath = "current/last/";				// by default, query for the last race that happened
+	resultReqPath = "results.json";				// we want results back in json, using default limits
+
+	constructor () {
+		super();
+
+		this.state = { 			// these variables will be used in rendering; initial values listed below
+			"race":{
+				"raceName": "",
+				"Circuit" : { "circuitName": "" },
+				"date": 		"",
+				"Results": [
+					{Driver,Constructor,Time},			// reserve 3 data slots for drivers
+				]
+			}
+		};
+
+		this.driverList = this.state.race.Results.map ( (result, i) => 
+			<li key={i}>{result.Driver.code}</li>
+		);
+	}
+	/*
+	driverList = this.state.race.Results ( result => {
+		<li> result.number  </li>
+	});*/
+
+	render(){
+		return(
+			<div id="fastest-lap-by-driver">
+				<h2>Fastest Lap of Each Driver</h2>
+				<ul>
+					{ 
+						this.driverList
+					}
+				</ul>
+			</div>
+		);
+	}
+
+	componentDidMount () {
+		//var url = httpBaseUrl + "current/last/results.json?limit=3";
+		var url = httpBaseUrl + this.raceReqpath + this.resultReqPath;
+		axios.get ( url ).then(
+			res => {
+				const results = res.data.MRData.RaceTable.Races["0"];
+				this.setState ( {race: results} );
+			}
+		).catch(
+			err => { console.error(err); }
+		);
+	}
+}
+
+export default DriverWrapper;
