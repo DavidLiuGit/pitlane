@@ -4,13 +4,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
+import Plot from 'react-plotly.js';
 
 // img
 import imgRace from '../img/race.jpg';
 import imgVettel from '../img/vettel.jpg';
 import imgRedBull from '../img/redbull.jpg';
 
-// common-objects
+// common
 import {
 	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap
 }	from '../common-objects';
@@ -68,6 +69,7 @@ class DriverNavigator extends Component {
 }
 
 
+
 // fastest lap by each driver, in a given race
 class FastestLapByDriver extends Component {
 	raceReqpath = "current/last/";				// by default, query for the last race that happened
@@ -86,9 +88,23 @@ class FastestLapByDriver extends Component {
 				]
 			}
 		};
+	}
 
-		this.driverList = this.state.race.Results.map ( (result, i) => 
-			<li key={i}>{result.Driver.code}</li>
+	getDriverCodeArray () {
+		return this.state.race.Results.map ( result =>
+			{ return result.Driver.code; }
+		);
+	}
+
+	getFastestLaps () {
+		return this.state.race.Results.map ( result =>
+			{ return result.FastestLap.Time.time; }
+		);
+	}
+
+	getFastestLapsMillis () {
+		return this.state.race.Results.map ( result =>
+			{ return result.FastestLap.Time.millis; }
 		);
 	}
 
@@ -104,6 +120,24 @@ class FastestLapByDriver extends Component {
 						</div>
 					)}
 				</div>
+
+				<Plot
+					data={[
+						{
+							type: 'bar',
+							orientation: 'h',
+							x: this.getFastestLaps(),
+							y: this.getDriverCodeArray(),
+						}
+					]}
+
+					layout={{
+						width: 640,
+						height: 480,
+						title: 'Yolo'
+					}}
+				/>
+
 			</div>
 		);
 	}
@@ -114,6 +148,8 @@ class FastestLapByDriver extends Component {
 			res => {
 				const results = res.data.MRData.RaceTable.Races["0"];
 				this.setState ( {race: results} );
+				console.log ( this.getFastestLaps() );
+				console.log ( this.state );
 			}
 		).catch(
 			err => { console.error(err); }

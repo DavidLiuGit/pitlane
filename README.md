@@ -33,8 +33,8 @@ npm install --save material-ui@next
 # Axios - Asynchronous HTTP requests
 npm install --save axios
 
-# plotly.js
-
+# plotly.js & plotly for React
+npm install --save react-plotly.js plotly.js
 ```
 
 Backend

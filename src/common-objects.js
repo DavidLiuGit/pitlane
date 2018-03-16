@@ -15,7 +15,8 @@ var Constructor = {
 
 // time object (given as a delta for positions 2+)
 var Time = {					
-	"time": ""
+	"time": "",
+	"millis": ""
 }
 
 // lap timings
