@@ -15,6 +15,10 @@ import imgRedBull from '../img/redbull.jpg';
 import {
 	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap
 }	from '../common-objects';
+import { 
+	laptimeInSeconds, laptimeAsBullshitDate,
+	getElementHeight, getElementWidth, 
+} from '../common-functions';
 
 
 //var httpBaseUrl = "http://localhost";
@@ -74,6 +78,7 @@ class DriverNavigator extends Component {
 class FastestLapByDriver extends Component {
 	raceReqpath = "current/last/";				// by default, query for the last race that happened
 	resultReqPath = "results.json";				// we want results back in json, using default limits
+	chartContainerID = "fastest-lap-by-driver-chart-container";
 
 	constructor () {
 		super();
@@ -96,47 +101,47 @@ class FastestLapByDriver extends Component {
 		);
 	}
 
-	getFastestLaps () {
+	getFastestLapsAsDate () {
 		return this.state.race.Results.map ( result =>
-			{ return result.FastestLap.Time.time; }
+			{ return laptimeAsBullshitDate (result.FastestLap.Time.time); }
 		);
 	}
 
-	getFastestLapsMillis () {
+	getFastestLapsSeconds () {
 		return this.state.race.Results.map ( result =>
-			{ return result.FastestLap.Time.millis; }
+			{ return laptimeInSeconds(result.FastestLap.Time.time); }
+		);
+	}
+
+	getFastestLaps () {
+		return this.state.race.Results.map ( result =>
+			{ return result.FastestLap.Time; }
 		);
 	}
 
 	render(){
 		return(
-			<div id="fastest-lap-by-driver">
+			<div id="fastest-lap-by-driver" className="flex-container-column">
 				<h2>Fastest Lap of Each Driver</h2>
-				<div className="flex-container-row flex-space-between flex-wrap">
-					{this.state.race.Results.map ( (result, i) => 
-						<div key={'card'+i} className="driver-info-card">
-							<span key={"c"+i}>{result.Driver.code}</span>
-							<span key={'t'+i}>{result.FastestLap.Time.time}</span>
-						</div>
-					)}
+
+				<div id={this.chartContainerID} className="flex-grow-3">
+					<Plot
+						data={[
+							{
+								type: 'bar',
+								orientation: 'h',
+								x: this.getFastestLapsSeconds(),
+								y: this.getDriverCodeArray(),
+							}
+						]}
+
+						layout={{
+							width: getElementWidth(this.chartContainerID),
+							height: getElementHeight(this.chartContainerID),
+							title: 'Fastest Lap Time of Each Driver',
+						}}
+					/>
 				</div>
-
-				<Plot
-					data={[
-						{
-							type: 'bar',
-							orientation: 'h',
-							x: this.getFastestLaps(),
-							y: this.getDriverCodeArray(),
-						}
-					]}
-
-					layout={{
-						width: 640,
-						height: 480,
-						title: 'Yolo'
-					}}
-				/>
 
 			</div>
 		);
@@ -148,8 +153,7 @@ class FastestLapByDriver extends Component {
 			res => {
 				const results = res.data.MRData.RaceTable.Races["0"];
 				this.setState ( {race: results} );
-				console.log ( this.getFastestLaps() );
-				console.log ( this.state );
+				console.log ( getElementHeight(this.chartContainerID) + ' ' + getElementWidth(this.chartContainerID) );
 			}
 		).catch(
 			err => { console.error(err); }
