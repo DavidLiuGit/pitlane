@@ -29,19 +29,7 @@ export default class Navbar extends Component {
 				</svg>
 				<Link to="/"><span>Home</span></Link>
 				<Link to="/driver"><span>Drivers</span></Link>
-				<span>Contact</span>
-
-			{/*
-				<Drawer
-          docked="false"
-          width={350}
-          open={this.state.open}
-          onRequestClose={(open) => this.setState({open})}
-        >
-          <span onClick={this.handleClose}>Menu Item</span>
-          <span onClick={this.handleClose}>Menu Item 2</span>
-				</Drawer>
-			*/}
+				<Link to="/contact"><span>Contact</span></Link>
 
 			</div>
 		)

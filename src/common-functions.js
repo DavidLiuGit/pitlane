@@ -20,12 +20,20 @@ export function laptimeAsBullshitDate ( input, date = null ){
 
 // get element height
 export function getElementHeight ( elementID ) {
-	return document.getElementById ( elementID ).offsetHeight;
+	try {
+		return document.getElementById ( elementID ).offsetHeight;
+	} catch (e) {
+		return 0;
+	}
 }
 
 // get elementWidth
 export function getElementWidth ( elementID ) {
-	return document.getElementById ( elementID ).offsetWidth;
+	try {
+		return document.getElementById ( elementID ).offsetWidth;
+	} catch (e) {
+		return 0;
+	}
 }
 
 //export { liWrap };

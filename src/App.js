@@ -151,7 +151,7 @@ class LastRace extends Component {
 		return (
 			<div id="last-race">
 				<h2>Last Race</h2>
-				<div className="flex-container flex-space-between component">
+				<div className="flex-container flex-space-between component flex-wrap">
 
 					<div className="race-description">
 						<h3>{this.state.race.raceName}</h3>
@@ -236,5 +236,8 @@ class LastRace extends Component {
 		);
 	}
 }
+
+
+
 
 export default App;

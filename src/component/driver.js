@@ -121,8 +121,9 @@ class FastestLapByDriver extends Component {
 
 	render(){
 		return(
-			<div id="fastest-lap-by-driver" className="flex-container-column">
+			<div id="fastest-lap-by-driver" className="flex-container-column full-height">
 				<h2>Fastest Lap of Each Driver</h2>
+
 
 				<div id={this.chartContainerID} className="flex-grow-3">
 					<Plot
@@ -136,9 +137,16 @@ class FastestLapByDriver extends Component {
 						]}
 
 						layout={{
+							autosize: true,
 							width: getElementWidth(this.chartContainerID),
 							height: getElementHeight(this.chartContainerID),
 							title: 'Fastest Lap Time of Each Driver',
+							xaxis: {
+								title: "Lap time (seconds)"
+							},
+							yaxis: {
+								title: "Driver (code)",
+							}
 						}}
 					/>
 				</div>
@@ -160,5 +168,7 @@ class FastestLapByDriver extends Component {
 		);
 	}
 }
+
+
 
 export default DriverWrapper;

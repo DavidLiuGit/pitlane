@@ -32,6 +32,16 @@
 .flex-grow-3 { flex-grow: 3; }
 .flex-grow-1 { flex-grow: 1; }
 
+.full-height {
+	height: 94vh;
+	margin-top: 3vh;
+	margin-bottom: 3vh;
+}
+.full-width {
+	width: 98vw;
+	margin-left: 1vw;
+	margin-right: 1vw;
+}
 
 /******************************************************************************
 *	768px - 1200px - tablets and laptops
