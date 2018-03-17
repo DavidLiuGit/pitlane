@@ -15,6 +15,7 @@ import './css/animation.css';
 
 // components
 import DriverWrapper from './component/driver';
+import TeamWrapper from './component/team';
 import Navbar from './component/navbar';
 
 // common objects
@@ -46,6 +47,7 @@ class App extends Component {
 
 				<Switch>
 					<Route path="/driver" component={DriverWrapper}/>
+					<Route path="/team" component={TeamWrapper}/>
 					<Route path="/" component={Body}/>
 					<Redirect to="/" />
 				</Switch>
@@ -108,8 +110,10 @@ class Navigator extends Component {
 						</Link>
 					</div>
 					<div className="flex-1-3 navigator-box">
-						<img src={imgRedBull} alt="race" className="navigator-img"></img>
-						<h3>Team</h3> 
+						<Link to="/team">
+							<img src={imgRedBull} alt="race" className="navigator-img"></img>
+							<h3>Team</h3>
+						</Link>
 					</div>
 				</div>
 			</div>

@@ -29,7 +29,7 @@ export default class Navbar extends Component {
 				</svg>
 				<Link to="/"><span>Home</span></Link>
 				<Link to="/driver"><span>Drivers</span></Link>
-				<Link to="/contact"><span>Contact</span></Link>
+				<Link to="/team"><span>Team</span></Link>
 
 			</div>
 		)

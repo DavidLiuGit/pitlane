@@ -21,7 +21,6 @@ import {
 } from '../common-functions';
 
 
-//var httpBaseUrl = "http://localhost";
 
 
 class DriverWrapper extends Component {
@@ -63,8 +62,10 @@ class DriverNavigator extends Component {
 						</Link>
 					</div>
 					<div className="flex-1-3 navigator-box">
-						<img src={imgRedBull} alt="team" className="navigator-img"></img>
-						<h3>Team</h3> 
+						<Link to="/team">
+							<img src={imgRedBull} alt="team" className="navigator-img"></img>
+							<h3>Team</h3> 
+						</Link>
 					</div>
 				</div>
 			</div>

@@ -17,6 +17,7 @@ Statistics by driver:
 
 Statistics by team
 * all of the same statistics that can be found by driver, but aggregated by team
+* points raced progression throughout the season
 * points earned per season
 
 
