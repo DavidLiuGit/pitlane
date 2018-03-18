@@ -2,7 +2,7 @@
 
 These tables/relations are available in the Database. Don't forget to use quotes for any tables that have capital letters... Postgresql CLI doesn't play well with camelCase (and capital letters in general). Postgres CLI will also only accept immediate strings with single quotes - double quotes are interpreted as column names.
 
-**TOC**
+**Table of Contents**
 - [Database structure](#database-structure)
 	- [seasons](#seasons)
 	- [circuits](#circuits)
@@ -12,6 +12,13 @@ These tables/relations are available in the Database. Don't forget to use quotes
 	- [driverStandings](#driverstandings)
 	- [drivers](#drivers)
 	- [laptimes](#laptimes)
+	- [pitStops](#pitstops)
+	- [qualifying](#qualifying)
+	- [races](#races)
+	- [results](#results)
+	- [seasons](#seasons)
+	- [status](#status)
+- [Dynamic Pivot Table](#dynamic-pivot-table)
 
 ---
 
@@ -160,6 +167,8 @@ serial | fkey: races.raceid | fkey: drivers.driverId | fkey: constructors.constr
  2008 | http://en.wikipedia.org/wiki/2008_Formula_One_season
  2007 | http://en.wikipedia.org/wiki/2007_Formula_One_season
 
+---
+
 ## status
 
 statusId |       status       
@@ -168,3 +177,44 @@ serial | described what happened to driver
 1 | Finished
 2 | Disqualified
 3 | Accident
+
+---
+
+# Dynamic Pivot Table
+
+Turn this...
+```
+ round |     name     | points 
+-------+--------------+--------
+     1 | Ferrari      |     37
+     1 | Mercedes     |     33
+     1 | Red Bull     |     10
+     2 | Ferrari      |     65
+     2 | Mercedes     |     66
+     2 | Red Bull     |     37
+     3 | Ferrari      |    102
+     3 | Mercedes     |     99
+     3 | Red Bull     |     47
+```
+
+into this:
+```
+ round | data  
+-------+------------------------------------------------------------
+     1 | { "Ferrari" : 37, "Mercedes" : 33, "Red Bull" : 10, ... }
+     2 | { "Ferrari" : 65, "Mercedes" : 66, "Red Bull" : 37, ... }
+     3 | { "Ferrari" : 102, "Mercedes" : 99, "Red Bull" : 47, ... }
+```
+
+Using Postgres 10's  `json_object_agg ( attribute, value )`. An API to do this - `postgres_pivot_json()` has been set up in `data_handler.py` to do this easily. It takes the following params:
+
+param | description
+--- | ---
+`query` | a subquery string - this subquery MUST return a table with the above format (i.e. 3 cols ). The 3 column names must be passed to this function as specified below
+`group` | the name of the column, whose DISTINCT values will be used to group data
+`attribute` | the name of the column, will be paired with the value and loaded into the data object
+`value` | the name of the column, paired with attributes and loaded into the data object
+`order_by="ASC"` | an order-by (sort) clause - rows will be sorted by `group`. Specify `order_by="DESC"` to sort descending
+`data_col_name="data"` | set the name of the column that will contain the data objects
+
+The example was constructed by calling `postgres_pivot_json ( query, "round", "name", "points" )`, where query is a subquery that produces the 1st table.

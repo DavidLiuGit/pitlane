@@ -145,12 +145,8 @@ class FastestLapByDriver extends Component {
 							width: getElementWidth(this.chartContainerID),
 							height: getElementHeight(this.chartContainerID),
 							title: 'Fastest Lap Time of Each Driver',
-							xaxis: {
-								title: "Lap time (seconds)"
-							},
-							yaxis: {
-								title: "Driver (code)",
-							}
+							xaxis: { title: "Lap time (seconds)" },
+							yaxis: { title: "Driver (code)" }
 						}}
 					/>
 				</div>
