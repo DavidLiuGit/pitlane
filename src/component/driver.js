@@ -11,6 +11,9 @@ import imgRace from '../img/race.jpg';
 import imgVettel from '../img/vettel.jpg';
 import imgRedBull from '../img/redbull.jpg';
 
+// Material-UI
+import Select from 'material-ui/Select';
+
 // common
 import {
 	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap, pitlaneApiBaseurl
@@ -24,13 +27,6 @@ import {
 
 
 class DriverWrapper extends Component {
-	constructor () {
-		super()
-		this.state = {
-			seasons: []
-		}
-	}
-
 	render() {
 		return (
 			<div id="APP-BODY">
@@ -46,17 +42,6 @@ class DriverWrapper extends Component {
 
 			</div>
 		);
-	}
-
-	componentDidMount () {
-		// get list of seasons
-		var url = pitlaneApiBaseurl + "seasons";
-		axios.get ( url ).then ( res => {
-			const data = res.data.year.unshift('current');
-			this.setState ( {seasons: data} );
-		}).catch (
-			err => console.error ( err )
-		)
 	}
 }
 

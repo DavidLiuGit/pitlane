@@ -11,9 +11,12 @@ import imgRace from '../img/race.jpg';
 import imgVettel from '../img/vettel.jpg';
 import imgRedBull from '../img/redbull.jpg';
 
+// material ui
+import Button from 'material-ui/Button';
+
 // common
 import {
-	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap
+	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap, pitlaneApiBaseurl
 }	from '../common-objects';
 import {
 	getElementHeight, getElementWidth, 
@@ -22,6 +25,13 @@ import {
 
 
 class TeamWrapper extends Component {
+	constructor () {
+		super()
+		this.state = {
+			seasons: ["current"]
+		}
+	}
+
 	render() {
 		return (
 			<div id="APP-BODY">
@@ -33,10 +43,22 @@ class TeamWrapper extends Component {
 
 				<hr />
 
-				<TeamStandings />
+				<TeamStandings seasons={this.state.seasons} />
 
 			</div>
 		);
+	}
+
+	componentDidMount () {
+		// get list of seasons
+		var url = pitlaneApiBaseurl + "seasons";
+		axios.get ( url ).then ( res => {
+			res.data.year.unshift("current");
+			const data = res.data.year;
+			this.setState ( {seasons: data} );
+		}).catch (
+			err => console.error ( err )
+		)
 	}
 }
 
@@ -77,6 +99,7 @@ class TeamNavigator extends Component {
 
 // current points standings by team
 class TeamStandings extends Component {
+	
 	raceReqpath 		= "current/";				// get current season standings - no need to specify round
 	roundReqpath		= "";								// but just in case we need it in the future...
 	resultReqpath		= "constructorStandings.json";
@@ -84,6 +107,7 @@ class TeamStandings extends Component {
 
 	constructor () {
 		super();
+		//this.season 					= "current";
 
 		this.state = {
 			"data": {
@@ -97,10 +121,12 @@ class TeamStandings extends Component {
 						Constructor,
 					}
 				]
-			}
+			},
+			"seasonSelected" : "current"
 		}
 	}
 
+	// array assemblers
 	getConstructorArray () {
 		return this.state.data.ConstructorStandings.map ( result =>
 			{ return result.Constructor.name; }
@@ -119,11 +145,27 @@ class TeamStandings extends Component {
 		);
 	}
 
+	getSeasonsOptionsArray () {
+		return this.props.seasons.map ( (year,i) => {
+			return ( <option key={i} value={year}>{year}</option> );
+		});
+	}
 
 	render () {
 		return (
 			<div id="team-standings-component" className="flex-container-column full-height">
 				<h2>Team Standings</h2>
+				<span className="align-left">
+					<span className="options-bar">
+						Select season: &nbsp;
+						<select value={this.state.seasonSelected} className="pill" onChange={event => this.setState({ seasonSelected: event.target.value })}>
+							{ this.getSeasonsOptionsArray() }
+						</select>
+					</span>
+					<span>
+						<button className="btn pill primary transition-0-15" onClick={this.do_request.bind(this)} >Change Season</button>
+					</span>
+				</span>
 
 				<div id={this.chartContainerId} className="flex-grow-3">
 					<Plot
@@ -135,7 +177,8 @@ class TeamStandings extends Component {
 						}]}
 
 						layout={{
-							title: "Team standings",
+							autosize: true,
+							title: "Team standings: " + this.state.data.season + ", round " + this.state.data.round,
 							width: getElementWidth(this.chartContainerID),
 							height: getElementHeight(this.chartContainerID),
 							xaxis: { title: "Points earned" },
@@ -147,14 +190,18 @@ class TeamStandings extends Component {
 		);
 	}
 
-
 	componentDidMount () {
-		var url = httpBaseUrl + this.raceReqpath + this.roundReqpath + this.resultReqpath;
+		this.do_request();
+	}
+
+	// make request to server
+	do_request () {
+		var url = httpBaseUrl + this.state.seasonSelected + '/' + this.roundReqpath + this.resultReqpath;
 		axios.get ( url ).then (
 			res => {
 				const results = res.data.MRData.StandingsTable.StandingsLists[0];
 				this.setState ( { data: results } );
-				console.log ( this.state );
+				//console.log ( this.state );
 			}
 		).catch (
 			err => { console.error(err); }

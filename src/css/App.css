@@ -82,6 +82,15 @@ div.component {
 	text-decoration: none;
 }
 
+.pill { border-radius: 500px; }
+.btn { 
+	padding: 0.5em 1em; 
+	font-size: 1em; 
+	border-width: 1px;
+	box-shadow: none;
+}
+
+span.options-bar { margin: 0 20px; }
 
 
 /******************************************************************************
@@ -105,6 +114,10 @@ a.button {
 	border-radius: 50%;
 }
 
+select {
+	background-color: #fff;
+	padding: 0.5em 1em;
+}
 
 
 /******************************************************************************
@@ -141,9 +154,27 @@ a {
 	text-decoration: inherit;
 }
 
+.align-left { text-align: left; }
+
+
 /******************************************************************************
 *	Images/SVGs
 ******************************************************************************/
 .svgLogo {
 	color: #fff;
+}
+
+
+/******************************************************************************
+*	color schemes
+******************************************************************************/
+
+.primary {
+	color: #fff;
+	background-color: #006de1;
+	border-color: #006de1;
+}
+.primary:hover {
+	background-color: #003f83;
+	border-color: #0062cc;
 }
