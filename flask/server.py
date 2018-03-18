@@ -3,48 +3,18 @@
 # core flask modules
 from flask import Flask, Response, redirect, url_for, request, session, abort
 from flask_cors import CORS
-import psycopg2
 
 # utility modules
 from json import dumps
-from getpass import getpass
 
 # my modules
 import users
+from data_handler import query, dictify, postgres_pivot_json
 
 # app config
 app = Flask(__name__)		
 CORS(app)					# allow cross-origin resource sharing
-#passwd = getpass ( "Enter database password: " )			# use if password needed
-conn = psycopg2.connect("dbname=f1 user=allah")
-cur = conn.cursor()
 
-# do a sample query to make sure that things work
-#cur.execute("""SELECT * from "constructorStandings" LIMIT 3""")
-#contents = cur.fetchall()
-#print ( [col[0] for col in cur.description] )
-#print ( contents )
-
-# use this function to do a query
-def query ( q ) :
-	try :
-		cur.execute ( q )
-		results = cur.fetchall()
-		col_headers = [col[0] for col in cur.description]
-		return results, col_headers
-	except Exception as e:
-		print ( e )
-		conn.rollback()
-
-
-# create a dict from results and column headers
-def dictify ( results, col_headers ):
-	assert isinstance(results, list), "Error: results is NOT a list"			# make sure both are Lists (arrays)
-	assert isinstance(col_headers, list), "Error: col_headers is NOT a list"
-	ret = {}
-	for i in range ( len(col_headers) ):
-		ret [ col_headers[i] ] = [ row[i] for row in results ] 
-	return ret
 
 
 
@@ -63,10 +33,29 @@ def fake_login():
 def echoback( msg ):
 	return dumps ( msg )
 
+
+# return list of seasons in the database
 @app.route ( '/seasons' )
-def getSeasons () :
+def get_seasons () :
 	res, cols = query ( """SELECT year FROM seasons ORDER BY year DESC"""  )
 	return dumps ( dictify (res, cols) )
+
+
+# return 
+@app.route ( '/teams/standings_progression/<year>')
+def team_standings_progression ( year ):
+	q = """
+	SELECT round, co.name, points 
+	FROM races as r 
+	LEFT JOIN "constructorStandings" as c 
+	ON r."raceId"=c."raceId" 
+	LEFT JOIN constructors as co 
+	ON c."constructorId"=co."constructorId" 
+	WHERE year={}
+	""".format(year)
+	q = postgres_pivot_json( q, "round", "name", "points" )		# group=round num, attr=constructor name, value=points
+	res, cols = query ( q )
+	return dumps ( dictify(res, cols) )
 
 
 # launch server with: python server.py
