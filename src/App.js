@@ -34,8 +34,7 @@ import imgRedBull from './img/redbull.jpg';
 
 
 class App extends Component {
-	 render() {			
-		var h2Gray = { color: '#ddd' };
+	render() {			
     return (
       <div className="App">
 

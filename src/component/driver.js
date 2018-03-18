@@ -13,10 +13,10 @@ import imgRedBull from '../img/redbull.jpg';
 
 // common
 import {
-	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap
+	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap, pitlaneApiBaseurl
 }	from '../common-objects';
 import { 
-	laptimeInSeconds, laptimeAsBullshitDate,
+	laptimeInSeconds, laptimeAsBullshitDate, liWrap,
 	getElementHeight, getElementWidth, 
 } from '../common-functions';
 
@@ -24,6 +24,13 @@ import {
 
 
 class DriverWrapper extends Component {
+	constructor () {
+		super()
+		this.state = {
+			seasons: []
+		}
+	}
+
 	render() {
 		return (
 			<div id="APP-BODY">
@@ -39,6 +46,17 @@ class DriverWrapper extends Component {
 
 			</div>
 		);
+	}
+
+	componentDidMount () {
+		// get list of seasons
+		var url = pitlaneApiBaseurl + "seasons";
+		axios.get ( url ).then ( res => {
+			const data = res.data.year.unshift('current');
+			this.setState ( {seasons: data} );
+		}).catch (
+			err => console.error ( err )
+		)
 	}
 }
 

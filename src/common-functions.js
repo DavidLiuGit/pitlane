@@ -3,7 +3,7 @@ import React from 'react';
 
 // wrap whatever you passed in with <li>; props options
 export function liWrap ( input, props = null ) {
-	return ( <li>input</li> );
+	return ( <li> {input} </li> );									// not set up to handle props yet!
 }
 
 // convert time in M:SS:mmm format to seconds (e.g. 1:24:831)

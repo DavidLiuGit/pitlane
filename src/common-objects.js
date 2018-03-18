@@ -41,6 +41,7 @@ var FastestLap = {
 
 // beginning of the URL where we will make our API calls
 var httpBaseUrl = "http://ergast.com/api/f1/";
+var pitlaneApiBaseurl = "http://ilike2teabag.ddns.net:6969/";
 
 
 export { 
@@ -49,5 +50,6 @@ export {
 	Time, 
 	Timings, 
 	FastestLap,
-	httpBaseUrl, 
+	httpBaseUrl,
+	pitlaneApiBaseurl,
 };
