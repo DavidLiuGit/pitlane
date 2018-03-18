@@ -20,12 +20,11 @@ conn = psycopg2.connect("dbname=f1 user=allah")
 cur = conn.cursor()
 
 # do a sample query to make sure that things work
-""" #a sample query
-cur.execute("""SELECT * from "constructorStandings" LIMIT 3""")
-contents = cur.fetchall()
-print ( [col[0] for col in cur.description] )
-print ( contents )
-"""
+#cur.execute("""SELECT * from "constructorStandings" LIMIT 3""")
+#contents = cur.fetchall()
+#print ( [col[0] for col in cur.description] )
+#print ( contents )
+
 
 
 @app.route('/')
