@@ -17,7 +17,7 @@ import Button from 'material-ui/Button';
 // common
 import {
 	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap, 
-	pitlaneApiBaseurl, ExtensibleDataComponent,
+	pitlaneApiBaseurl, ExtensibleDataComponent, ExtensibleNavigatorComponent,
 }	from '../common-objects';
 import {
 	getElementHeight, getElementWidth, 
@@ -25,7 +25,7 @@ import {
 
 
 
-class TeamWrapper extends Component {
+class TeamWrapper extends ExtensibleNavigatorComponent {
 	constructor () {
 		super()
 		this.state = {
@@ -74,30 +74,14 @@ class TeamWrapper extends Component {
 
 
 // navigation
-class TeamNavigator extends Component {
+class TeamNavigator extends ExtensibleNavigatorComponent {
 	render() {
 		return (
 			<div>
 				<h2>View stats</h2>
-				<div  className="flex-container flex-space-between component">
-					<div className="flex-1-3 navigator-box">
-						<Link to="/team/standings">
-							<img src={imgRace} alt="home" className="navigator-img"></img>
-							<h3>Home</h3>
-						</Link>
-					</div>
-					<div className="flex-1-3 navigator-box">
-						<Link to="/team/progression">
-							<img src={imgVettel} alt="race" className="navigator-img"></img>
-							<h3>Driver</h3>
-						</Link>
-					</div>
-					<div className="flex-1-3 navigator-box">
-						<Link to="/team">
-							<img src={imgRedBull} alt="team" className="navigator-img"></img>
-							<h3>Team</h3> 
-						</Link>
-					</div>
+				<div  className="flex-container flex-space-around component">
+					{ this.getNavCard ( '/team/standings', 'Standings', imgRace ) }
+					{ this.getNavCard ( '/team/progression', 'Points Progression', imgRedBull ) }
 				</div>
 			</div>
 		);

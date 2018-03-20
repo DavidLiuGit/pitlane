@@ -1,5 +1,6 @@
 // common objects that are used in multiple components
 import React, {Component} from 'react';
+import { Link } from 'react-router-dom';
 import {
 	getElementHeight, getElementWidth, 
 } from './common-functions';
@@ -70,6 +71,21 @@ class ExtensibleDataComponent extends Component {
 
 }
 
+// note that the "Extensible" prefix implies that the class is a "template" or meant to be abstract
+class ExtensibleNavigatorComponent extends Component {
+	getNavCard ( link, title, img ) {
+		return (
+			<div className="flex-1-3 navigator-box">
+				<Link to={link}>
+					<img src={img} alt={title} className="navigator-img"></img>
+					<h3>{title}</h3>
+				</Link>
+			</div>
+		)
+	}
+}
+
+
 export { 
 	Driver, 
 	Constructor, 
@@ -79,4 +95,5 @@ export {
 	httpBaseUrl,
 	pitlaneApiBaseurl,
 	ExtensibleDataComponent,
+	ExtensibleNavigatorComponent,
 };

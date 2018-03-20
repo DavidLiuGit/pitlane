@@ -52,23 +52,11 @@ class DriverNavigator extends Component {
 		return (
 			<div>
 				<h2>View stats</h2>
-				<div  className="flex-container flex-space-between component">
+				<div  className="flex-container flex-space-around component">
 					<div className="flex-1-3 navigator-box">
 						<Link to="/">
 							<img src={imgRace} alt="home" className="navigator-img"></img>
 							<h3>Home</h3>
-						</Link>
-					</div>
-					<div className="flex-1-3 navigator-box">
-						<Link to="/driver">
-							<img src={imgVettel} alt="race" className="navigator-img"></img>
-							<h3>Driver</h3>
-						</Link>
-					</div>
-					<div className="flex-1-3 navigator-box">
-						<Link to="/team">
-							<img src={imgRedBull} alt="team" className="navigator-img"></img>
-							<h3>Team</h3> 
 						</Link>
 					</div>
 				</div>
@@ -172,7 +160,7 @@ class FastestLapByDriver extends Component {
 
 
 class DriverProgression extends ExtensibleDataComponent {
-	
+
 }
 
 
