@@ -42,8 +42,14 @@ class TeamWrapper extends Component {
 				<TeamNavigator />
 
 				<hr />
-
-				<TeamStandings seasons={this.state.seasons} />
+				{/*<TeamStandings seasons={this.state.seasons} />*/}
+				
+				<Switch>
+					<Route path="/team/standings" component={() => <TeamStandings seasons={this.state.seasons} />} />
+					<Route path="/team/progression" component={() => <TeamProgression seasons={this.state.seasons} />} />
+					<Redirect to="/team/standings" />
+					{/*<TeamStandings seasons={this.state.seasons} /> */}
+				</Switch>
 
 			</div>
 		);
@@ -51,11 +57,13 @@ class TeamWrapper extends Component {
 
 	componentDidMount () {
 		// get list of seasons
+		if (this.unmounted) return;
 		var url = pitlaneApiBaseurl + "seasons";
 		axios.get ( url ).then ( res => {
 			res.data.year.unshift("current");
 			const data = res.data.year;
 			this.setState ( {seasons: data} );
+			console.log ( "wrapper setstate done");
 		}).catch (
 			err => console.error ( err )
 		)
@@ -72,13 +80,13 @@ class TeamNavigator extends Component {
 				<h2>View stats</h2>
 				<div  className="flex-container flex-space-between component">
 					<div className="flex-1-3 navigator-box">
-						<Link to="/">
+						<Link to="/team/standings">
 							<img src={imgRace} alt="home" className="navigator-img"></img>
 							<h3>Home</h3>
 						</Link>
 					</div>
 					<div className="flex-1-3 navigator-box">
-						<Link to="/driver">
+						<Link to="/team/progression">
 							<img src={imgVettel} alt="race" className="navigator-img"></img>
 							<h3>Driver</h3>
 						</Link>
@@ -96,22 +104,124 @@ class TeamNavigator extends Component {
 }
 
 
+// extensible charting component - this is an abstract class and should not be rendered
+class ExtensibleTeamComponent extends Component {
+	chartContainerId = ""
+	pushStateChartContainerSize () {
+		this.setState({
+			containerWidth: getElementWidth( this.chartContainerId ),
+			containerHeight:getElementHeight( this.chartContainerId ),
+		})
+	}
 
-// current points standings by team
-class TeamStandings extends Component {
-	
-	raceReqpath 		= "current/";				// get current season standings - no need to specify round
-	roundReqpath		= "";								// but just in case we need it in the future...
-	resultReqpath		= "constructorStandings.json";
-	chartContainerId= "team-standings-chart-container";
+	componentDidMount () {
+		this.do_request();
+		this.pushStateChartContainerSize();
+	}
+}
+
+
+
+// display plot of team points progression throughout season
+class TeamProgression extends ExtensibleTeamComponent {
+	// request path: /team/standings_progression/<year>
+	reqpath						= "team/standings_progression/";
+	chartContainerId 	= "team-progression-chart-container";
 
 	constructor () {
 		super();
-		//this.season 					= "current";
+
+		this.state = {
+			containerHeight: 100, containerWidth: 100,
+			plotData : [{ mode: "", name: "", x: [], y:[] }],
+			seasonSelected: "2017",
+		}
+	}
+
+
+
+	render() {
+		return (
+			<div id="team-progression-component" className="flex-container-column full-height">
+				<h2>Team Standings Progression</h2>
+				<span className="align-left">
+
+				
+
+				</span>
+
+				<div id={this.chartContainerId} className="flex-grow-3">
+					<Plot  
+						data={ this.state.plotData }
+						layout={{
+							autosize: true,
+							width: this.state.containerWidth,
+							height: this.state.containerHeight,
+							title: "Team progression: " + this.state.seasonSelected,
+							xaxis: { title: "Round number" },
+						}}
+						useResizeHandler={true}
+					/>
+
+				</div>
+
+			</div>
+		);
+	}
+
+	componentDidMount () {
+		this.do_request();
+		this.setState ( {
+			containerWidth: getElementWidth( this.chartContainerId ),
+			containerHeight:getElementHeight( this.chartContainerId ),
+		})
+	}
+
+	do_request () {
+		var url = pitlaneApiBaseurl + this.reqpath + this.state.seasonSelected;
+		axios.get ( url ).then ( res => {
+			var processed_data = this.process_object_to_array ( res.data.name, res.data.points_after_round );
+			console.log ( processed_data );
+			this.setState ( {plotData: processed_data} );
+		}).catch ( err => { 
+			console.error(err); 
+		} );
+	}
+
+	// take in json object and arrays, spit out a nice array of objects
+	// in each object, x=array of rounds, y=array of scores in corresponding rounds, name=dataset name, mode="lines+markers"
+	process_object_to_array ( team_arr, obj_arr, _mode="lines+markers" ) {
+		var ret = [];
+		for ( var i = 0; i < team_arr.length; i++ ){
+			var obj = { mode: _mode, name:team_arr[i], x: [], y: [] };
+			for ( var round in obj_arr[i] ){
+				obj.x.push ( round );									// push round number
+				obj.y.push ( obj_arr[i][round] );			// push score
+			}
+			ret.push ( obj );
+		}
+		return ret;
+	}
+
+}
+
+
+
+// current points standings by team
+class TeamStandings extends ExtensibleTeamComponent {
+	
+	//raceReqpath 		= "current/";				// get current season standings - no need to specify round
+	roundReqpath		= "";								// but just in case we need it in the future...
+	resultReqpath		= "constructorStandings.json";
+	chartContainerId= "team-standings-chart-container";
+	initialReqDone	= false;
+
+	constructor () {
+		super();
 
 		this.state = {
 			"data": {
-				"season": "",
+				"season": null,
 				"round": "",
 				"ConstructorStandings": [
 					{
@@ -151,14 +261,17 @@ class TeamStandings extends Component {
 		});
 	}
 
+	
+
 	render () {
 		return (
 			<div id="team-standings-component" className="flex-container-column full-height">
 				<h2>Team Standings</h2>
-				<span className="align-left">
-					<span className="options-bar">
+				<span className="align-left options-bar">
+					<span>
 						Select season: &nbsp;
-						<select value={this.state.seasonSelected} className="pill" onChange={event => this.setState({ seasonSelected: event.target.value })}>
+						<select value={this.state.seasonSelected} className="pill" 
+							onChange={event => { this.setState({ seasonSelected: event.target.value })} }>
 							{ this.getSeasonsOptionsArray() }
 						</select>
 					</span>
@@ -179,8 +292,6 @@ class TeamStandings extends Component {
 						layout={{
 							autosize: true,
 							title: "Team standings: " + this.state.data.season + ", round " + this.state.data.round,
-							width: getElementWidth(this.chartContainerID),
-							height: getElementHeight(this.chartContainerID),
 							xaxis: { title: "Points earned" },
 							//yaxis: { title: "Team name" }			// pretty self explanatory...
 						}}
@@ -196,12 +307,14 @@ class TeamStandings extends Component {
 
 	// make request to server
 	do_request () {
+		console.log ( "doing request" );
+		console.trace();
 		var url = httpBaseUrl + this.state.seasonSelected + '/' + this.roundReqpath + this.resultReqpath;
 		axios.get ( url ).then (
 			res => {
 				const results = res.data.MRData.StandingsTable.StandingsLists[0];
 				this.setState ( { data: results } );
-				//console.log ( this.state );
+				console.log ( "component setstate done");
 			}
 		).catch (
 			err => { console.error(err); }
@@ -209,6 +322,8 @@ class TeamStandings extends Component {
 	}
 
 }
+
+
 
 
 export default TeamWrapper;

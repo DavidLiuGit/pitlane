@@ -90,7 +90,7 @@ div.component {
 	box-shadow: none;
 }
 
-span.options-bar { margin: 0 20px; }
+.options-bar > span { margin: 0 15px; }
 
 
 /******************************************************************************
