@@ -41,10 +41,11 @@ npm install --save react-plotly.js plotly.js
 Backend
 ```bash
 # Flask
-pip install flask
+sudo apt-get install python-flask
 
 # Flask CORS (cross origin)
 pip install flask-cors --user
 
-# database converter - convert SQL dump to be Postgres-compatible 
+# psycopg2 - to interface with Postgres
+pip install psycopg2 psycopg2-client --user 
 ```

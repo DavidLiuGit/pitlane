@@ -6,6 +6,7 @@ from flask_cors import CORS
 
 # utility modules
 from json import dumps
+from traceback import print_exc
 
 # my modules
 import users
@@ -16,6 +17,13 @@ app = Flask(__name__)
 CORS(app)					# allow cross-origin resource sharing
 
 
+# on initialization of server, try doing a query and determine the following:
+try :
+	current_year_results, headers = query ( """SELECT DISTINCT year FROM results LEFT JOIN races ON results."raceId"=races."raceId" ORDER BY year DESC""" )
+	current_year = current_year_results[0][0]		# set the default "current" year to be the year the last race happened
+except Exception as e:
+	print_exc ( e )
+	raise IOError ( 'Error: the server encountered an error when attempting the initial query.' )
 
 
 @app.route('/')
@@ -44,6 +52,7 @@ def get_seasons () :		# SELECT year FROM seasons ORDER BY year DESC - get ALL ye
 # return 
 @app.route ( '/team/standings_progression/<year>')
 def team_standings_progression ( year ):
+	year = year if year!="current" else current_year			# if year specified is "current", substitute it with current_year
 	q = """
 	SELECT round, co.name, points 
 	FROM races as r 
@@ -52,10 +61,12 @@ def team_standings_progression ( year ):
 	LEFT JOIN constructors as co 
 	ON c."constructorId"=co."constructorId" 
 	WHERE year={}
-	""".format(year)
+	""".format( year )
 	q = postgres_pivot_json( q, "name", "round", "points", data_col_name="points_after_round" )	# group=team name, attr=round num, value=points
 	res, cols = query ( q )
-	return dumps ( dictify(res, cols) )
+	response = dictify(res, cols)
+	response['year'] = year				# add the year attribute to the result dict
+	return dumps ( response )
 
 
 # launch server with: python server.py
