@@ -42,13 +42,13 @@ def dictify ( results, col_headers ):
 #   group - the column whose values will be used to aggregate data
 #   attribute - will be paired with values in the json object
 #   value - will be paired with values in the json object
-def postgres_pivot_json ( query, group, attribute, value, order_by="ASC" ):
+def postgres_pivot_json ( query, group, attribute, value, order_by="ASC", data_col_name="data" ):
     q = """
-    SELECT subq.{grp}, json_object_agg ( subq.{attr}, subq.{val} )
+    SELECT subq.{grp}, json_object_agg ( subq.{attr}, subq.{val} ) as {c2}
     FROM (
         {subquery}
     ) subq
     GROUP BY subq.{grp}
     ORDER BY subq.{grp} {sort}
-    """. format ( subquery=query, grp=group, attr=attribute, val=value, sort=order_by )
+    """. format ( subquery=query, grp=group, attr=attribute, val=value, sort=order_by, c2=data_col_name )
     return q

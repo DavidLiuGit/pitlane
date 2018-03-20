@@ -34,15 +34,15 @@ def echoback( msg ):
 	return dumps ( msg )
 
 
-# return list of seasons in the database
+# return list of seasons in the database for which there are results
 @app.route ( '/seasons' )
-def get_seasons () :
-	res, cols = query ( """SELECT year FROM seasons ORDER BY year DESC"""  )
+def get_seasons () :		# SELECT year FROM seasons ORDER BY year DESC - get ALL years in database
+	res, cols = query ( """SELECT DISTINCT year FROM results LEFT JOIN races ON results."raceId"=races."raceId" ORDER BY year DESC""" )
 	return dumps ( dictify (res, cols) )
 
 
 # return 
-@app.route ( '/teams/standings_progression/<year>')
+@app.route ( '/team/standings_progression/<year>')
 def team_standings_progression ( year ):
 	q = """
 	SELECT round, co.name, points 
@@ -53,7 +53,7 @@ def team_standings_progression ( year ):
 	ON c."constructorId"=co."constructorId" 
 	WHERE year={}
 	""".format(year)
-	q = postgres_pivot_json( q, "round", "name", "points" )		# group=round num, attr=constructor name, value=points
+	q = postgres_pivot_json( q, "name", "round", "points", data_col_name="points_after_round" )	# group=team name, attr=round num, value=points
 	res, cols = query ( q )
 	return dumps ( dictify(res, cols) )
 
