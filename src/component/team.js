@@ -16,7 +16,8 @@ import Button from 'material-ui/Button';
 
 // common
 import {
-	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap, pitlaneApiBaseurl
+	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap, 
+	pitlaneApiBaseurl, ExtensibleDataComponent,
 }	from '../common-objects';
 import {
 	getElementHeight, getElementWidth, 
@@ -104,26 +105,12 @@ class TeamNavigator extends Component {
 }
 
 
-// extensible charting component - this is an abstract class and should not be rendered
-class ExtensibleTeamComponent extends Component {
-	chartContainerId = ""
-	pushStateChartContainerSize () {
-		this.setState({
-			containerWidth: getElementWidth( this.chartContainerId ),
-			containerHeight:getElementHeight( this.chartContainerId ),
-		})
-	}
 
-	componentDidMount () {
-		this.do_request();
-		this.pushStateChartContainerSize();
-	}
-}
 
 
 
 // display plot of team points progression throughout season
-class TeamProgression extends ExtensibleTeamComponent {
+class TeamProgression extends ExtensibleDataComponent {
 	// request path: /team/standings_progression/<year>
 	reqpath						= "team/standings_progression/";
 	chartContainerId 	= "team-progression-chart-container";
@@ -134,20 +121,31 @@ class TeamProgression extends ExtensibleTeamComponent {
 		this.state = {
 			containerHeight: 100, containerWidth: 100,
 			plotData : [{ mode: "", name: "", x: [], y:[] }],
-			seasonSelected: "2017",
+			seasonSelected: "current",
 		}
 	}
 
-
+	getSeasonsOptionsArray () {
+		return this.props.seasons.map ( (year,i) => {
+			return ( <option key={i} value={year}>{year}</option> );
+		});
+	}
 
 	render() {
 		return (
 			<div id="team-progression-component" className="flex-container-column full-height">
 				<h2>Team Standings Progression</h2>
-				<span className="align-left">
-
-				
-
+				<span className="align-left options-bar">
+					<span>
+						Select season: &nbsp;
+						<select value={this.state.seasonSelected} className="pill" 
+							onChange={event => { this.setState({ seasonSelected: event.target.value })} }>
+							{ this.getSeasonsOptionsArray() }
+						</select>
+					</span>
+					<span>
+						<button className="btn pill primary transition-0-15" onClick={this.do_request.bind(this)} >Change Season</button>
+					</span>
 				</span>
 
 				<div id={this.chartContainerId} className="flex-grow-3">
@@ -157,32 +155,24 @@ class TeamProgression extends ExtensibleTeamComponent {
 							autosize: true,
 							width: this.state.containerWidth,
 							height: this.state.containerHeight,
-							title: "Team progression: " + this.state.seasonSelected,
+							title: "Team progression: " + this.state.season,
 							xaxis: { title: "Round number" },
 						}}
 						useResizeHandler={true}
 					/>
-
 				</div>
 
 			</div>
 		);
 	}
 
-	componentDidMount () {
-		this.do_request();
-		this.setState ( {
-			containerWidth: getElementWidth( this.chartContainerId ),
-			containerHeight:getElementHeight( this.chartContainerId ),
-		})
-	}
 
 	do_request () {
 		var url = pitlaneApiBaseurl + this.reqpath + this.state.seasonSelected;
 		axios.get ( url ).then ( res => {
 			var processed_data = this.process_object_to_array ( res.data.name, res.data.points_after_round );
 			console.log ( processed_data );
-			this.setState ( {plotData: processed_data} );
+			this.setState ( {plotData: processed_data, season: res.data.year } );
 		}).catch ( err => { 
 			console.error(err); 
 		} );
@@ -208,7 +198,7 @@ class TeamProgression extends ExtensibleTeamComponent {
 
 
 // current points standings by team
-class TeamStandings extends ExtensibleTeamComponent {
+class TeamStandings extends ExtensibleDataComponent {
 	
 	//raceReqpath 		= "current/";				// get current season standings - no need to specify round
 	roundReqpath		= "";								// but just in case we need it in the future...
@@ -261,8 +251,6 @@ class TeamStandings extends ExtensibleTeamComponent {
 		});
 	}
 
-	
-
 	render () {
 		return (
 			<div id="team-standings-component" className="flex-container-column full-height">
@@ -291,6 +279,8 @@ class TeamStandings extends ExtensibleTeamComponent {
 
 						layout={{
 							autosize: true,
+							width: this.state.containerWidth,
+							height: this.state.containerHeight,
 							title: "Team standings: " + this.state.data.season + ", round " + this.state.data.round,
 							xaxis: { title: "Points earned" },
 							//yaxis: { title: "Team name" }			// pretty self explanatory...
@@ -301,14 +291,11 @@ class TeamStandings extends ExtensibleTeamComponent {
 		);
 	}
 
-	componentDidMount () {
-		this.do_request();
-	}
 
 	// make request to server
 	do_request () {
 		console.log ( "doing request" );
-		console.trace();
+		//console.trace();
 		var url = httpBaseUrl + this.state.seasonSelected + '/' + this.roundReqpath + this.resultReqpath;
 		axios.get ( url ).then (
 			res => {

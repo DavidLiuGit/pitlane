@@ -16,7 +16,8 @@ import Select from 'material-ui/Select';
 
 // common
 import {
-	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap, pitlaneApiBaseurl
+	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap, 
+	pitlaneApiBaseurl, ExtensibleDataComponent,
 }	from '../common-objects';
 import { 
 	laptimeInSeconds, laptimeAsBullshitDate, liWrap,
@@ -169,6 +170,10 @@ class FastestLapByDriver extends Component {
 	}
 }
 
+
+class DriverProgression extends ExtensibleDataComponent {
+	
+}
 
 
 export default DriverWrapper;
