@@ -1,4 +1,9 @@
 // common objects that are used in multiple components
+import React, {Component} from 'react';
+import {
+	getElementHeight, getElementWidth, 
+} from './common-functions';
+
 
 // driver data template
 var Driver = {				
@@ -39,10 +44,31 @@ var FastestLap = {
 	}
 }
 
+
+
 // beginning of the URL where we will make our API calls
 var httpBaseUrl = "http://ergast.com/api/f1/";
-var pitlaneApiBaseurl = "http://ilike2teabag.ddns.net:6969/";
+var pitlaneApiBaseurl = "http://localhost:6969/";
 
+
+
+// extensible charting component - this is an abstract class and should not be rendered
+class ExtensibleDataComponent extends Component {
+	chartContainerId = ""
+	pushStateChartContainerSize () {
+		this.setState({
+			containerWidth: getElementWidth( this.chartContainerId ),
+			containerHeight:getElementHeight( this.chartContainerId ),
+		})
+	}
+
+	componentDidMount () {
+		this.do_request();
+		this.pushStateChartContainerSize();
+	}
+
+
+}
 
 export { 
 	Driver, 
@@ -52,4 +78,5 @@ export {
 	FastestLap,
 	httpBaseUrl,
 	pitlaneApiBaseurl,
+	ExtensibleDataComponent,
 };
