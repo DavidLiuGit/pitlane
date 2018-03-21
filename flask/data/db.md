@@ -104,7 +104,7 @@ serial | string reference | driver number | 3 letter code | first name | last na
 
 ---
 
-## laptimes
+## lapTimes
 
  raceId | driverId | lap | position |    time     | milliseconds 
 --------|----------|-----|----------|-------------|--------------

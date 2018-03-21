@@ -18,6 +18,7 @@ import Select from 'material-ui/Select';
 import {
 	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap, 
 	pitlaneApiBaseurl, ExtensibleDataComponent, ExtensibleNavigatorComponent,
+	ExtensiblePageWrapperComponent
 }	from '../common-objects';
 import { 
 	laptimeInSeconds, laptimeAsBullshitDate, liWrap,
@@ -27,7 +28,7 @@ import {
 
 
 
-class DriverWrapper extends Component {
+class DriverWrapper extends ExtensiblePageWrapperComponent {
 	render() {
 		return (
 			<div id="APP-BODY">
@@ -39,9 +40,11 @@ class DriverWrapper extends Component {
 
 				<hr />
 
-				<FastestLapByDriver />
-				<DriverProgression />
-
+				<Switch>
+					<Route path="/driver/fastest-lap" component={() => <FastestLapByDriver seasons={this.state.seasons} /> } />
+					<Route path="/driver/progression" component={() => <DriverProgression seasons={this.state.seasons} /> } />
+					<Redirect to="/driver/fastest-lap" />
+				</Switch>
 			</div>
 		);
 	}
@@ -56,7 +59,8 @@ class DriverNavigator extends ExtensibleNavigatorComponent {
 			<div>
 				<h2>View stats</h2>
 				<div  className="flex-container flex-space-around component">
-					{ this.getNavCard('/driver', 'Fastest Lap', imgVettel) }
+					{ this.getNavCard('/driver/fastest-lap', 'Fastest Lap', imgVettel) }
+					{ this.getNavCard('/driver/progression', 'Points Progression', imgRedBull) }
 				</div>
 			</div>
 		);

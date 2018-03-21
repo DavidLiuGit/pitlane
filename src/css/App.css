@@ -65,6 +65,7 @@ div.component {
 	position: sticky;
 	top: 0px;
 	padding: 0 2%;
+	z-index: 100;
 }
 #navbar svg { 
 	height: 4em;
