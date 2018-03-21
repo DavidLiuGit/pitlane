@@ -17,7 +17,8 @@ import Button from 'material-ui/Button';
 // common
 import {
 	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap, 
-	pitlaneApiBaseurl, ExtensibleDataComponent, ExtensibleNavigatorComponent,
+	pitlaneApiBaseurl, 
+	ExtensibleDataComponent, ExtensibleNavigatorComponent, ExtensiblePageWrapperComponent
 }	from '../common-objects';
 import {
 	getElementHeight, getElementWidth, 
@@ -25,7 +26,7 @@ import {
 
 
 
-class TeamWrapper extends ExtensibleNavigatorComponent {
+class TeamWrapper extends ExtensiblePageWrapperComponent {
 	constructor () {
 		super()
 		this.state = {
@@ -54,20 +55,6 @@ class TeamWrapper extends ExtensibleNavigatorComponent {
 
 			</div>
 		);
-	}
-
-	componentDidMount () {
-		// get list of seasons
-		if (this.unmounted) return;
-		var url = pitlaneApiBaseurl + "seasons";
-		axios.get ( url ).then ( res => {
-			res.data.year.unshift("current");
-			const data = res.data.year;
-			this.setState ( {seasons: data} );
-			console.log ( "wrapper setstate done");
-		}).catch (
-			err => console.error ( err )
-		)
 	}
 }
 

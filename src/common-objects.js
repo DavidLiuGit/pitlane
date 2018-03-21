@@ -1,10 +1,15 @@
 // common objects that are used in multiple components
 import React, {Component} from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import {
 	getElementHeight, getElementWidth, 
 } from './common-functions';
 
+
+/******************************************************************************
+ * DATA OBJECT TEMPLATES
+*******************************************************************************/
 
 // driver data template
 var Driver = {				
@@ -47,11 +52,19 @@ var FastestLap = {
 
 
 
+/******************************************************************************
+ * PREDEFINED VARS
+*******************************************************************************/
+
 // beginning of the URL where we will make our API calls
 var httpBaseUrl = "http://ergast.com/api/f1/";
 var pitlaneApiBaseurl = "http://localhost:6969/";
 
 
+
+/******************************************************************************
+ * ABSTRACT (EXTENSIBLE) COMPONENTS
+*******************************************************************************/
 
 // extensible charting component - this is an abstract class and should not be rendered
 class ExtensibleDataComponent extends Component {
@@ -69,7 +82,7 @@ class ExtensibleDataComponent extends Component {
 	}
 
 	getSeasonsOptionsArray () {
-		if ( !this.props.season ) return null;
+		if ( !this.props.seasons ) return null;
 		return this.props.seasons.map ( (year,i) => {
 			return ( <option key={i} value={year}>{year}</option> );
 		});
@@ -92,6 +105,35 @@ class ExtensibleNavigatorComponent extends Component {
 	}
 }
 
+// page wrappers - will determine what children components need to be rendered
+class ExtensiblePageWrapperComponent extends Component {
+	constructor () {
+		super()
+		this.state = {
+			seasons: ["current"]
+		}
+	}
+
+	componentDidMount () {
+		this.getSeasonsArray();
+	}
+
+	getSeasonsArray () {
+		var url = pitlaneApiBaseurl + "seasons";
+		axios.get ( url ).then ( res => {
+			res.data.year.unshift("current");
+			const data = res.data.year;
+			this.setState ( {seasons: data} );
+			console.log ( "wrapper setstate done");
+		}).catch (
+			err => console.error ( err )
+		)
+		console.log ( "page wrapper mounted and done!");
+	}
+}
+
+
+
 
 export { 
 	Driver, 
@@ -103,4 +145,5 @@ export {
 	pitlaneApiBaseurl,
 	ExtensibleDataComponent,
 	ExtensibleNavigatorComponent,
+	ExtensiblePageWrapperComponent,
 };
