@@ -2,6 +2,7 @@
 
 import psycopg2
 from getpass import getpass
+from traceback import print_exc
 
 
 #passwd = getpass ( "Enter database password: " )			# use if password needed
@@ -22,7 +23,7 @@ def query ( q ) :
 		col_headers = [col[0] for col in cur.description]
 		return results, col_headers
 	except Exception as e:
-		print ( e )
+		print_exc ( e )
 		conn.rollback()
 
 

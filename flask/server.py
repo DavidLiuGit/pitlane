@@ -56,16 +56,31 @@ def team_standings_progression ( year ):
 	q = """
 	SELECT round, co.name, points 
 	FROM races as r 
-	LEFT JOIN "constructorStandings" as c 
-	ON r."raceId"=c."raceId" 
-	LEFT JOIN constructors as co 
-	ON c."constructorId"=co."constructorId" 
+	LEFT JOIN "constructorStandings" as c ON r."raceId"=c."raceId" 
+	LEFT JOIN constructors as co ON c."constructorId"=co."constructorId" 
 	WHERE year={}
 	""".format( year )
 	q = postgres_pivot_json( q, "name", "round", "points", data_col_name="points_after_round" )	# group=team name, attr=round num, value=points
 	res, cols = query ( q )
 	response = dictify(res, cols)
 	response['year'] = year				# add the year attribute to the result dict
+	return dumps ( response )
+
+
+@app.route ( '/driver/standings_progression/<year>' )
+def driver_standings_progression ( year ):
+	year = year if year!="current" else current_year			# if year specified is "current", substitute it with current_year
+	q = """
+	select forename || ' ' || surname as fullname, r.round, ds.points
+	FROM races as r
+	LEFT JOIN "driverStandings" as ds ON ds."raceId"=r."raceId"
+	LEFT JOIN drivers as d ON d."driverId"=ds."driverId"
+	WHERE year={}
+	""".format ( year )
+	q = postgres_pivot_json ( q, "fullname", "round", "points", data_col_name="points_after_round" )
+	res, cols = query ( q )
+	response = dictify ( res, cols )
+	response['year'] = year
 	return dumps ( response )
 
 
