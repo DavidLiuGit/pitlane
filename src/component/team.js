@@ -109,12 +109,6 @@ class TeamProgression extends ExtensibleDataComponent {
 		}
 	}
 
-	getSeasonsOptionsArray () {
-		return this.props.seasons.map ( (year,i) => {
-			return ( <option key={i} value={year}>{year}</option> );
-		});
-	}
-
 	render() {
 		return (
 			<div id="team-progression-component" className="flex-container-column full-height">
@@ -227,12 +221,6 @@ class TeamStandings extends ExtensibleDataComponent {
 		return this.state.data.ConstructorStandings.map ( result => 
 			{ return result.wins; }
 		);
-	}
-
-	getSeasonsOptionsArray () {
-		return this.props.seasons.map ( (year,i) => {
-			return ( <option key={i} value={year}>{year}</option> );
-		});
 	}
 
 	render () {

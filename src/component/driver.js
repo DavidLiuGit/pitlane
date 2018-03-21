@@ -17,7 +17,7 @@ import Select from 'material-ui/Select';
 // common
 import {
 	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap, 
-	pitlaneApiBaseurl, ExtensibleDataComponent,
+	pitlaneApiBaseurl, ExtensibleDataComponent, ExtensibleNavigatorComponent,
 }	from '../common-objects';
 import { 
 	laptimeInSeconds, laptimeAsBullshitDate, liWrap,
@@ -40,25 +40,23 @@ class DriverWrapper extends Component {
 				<hr />
 
 				<FastestLapByDriver />
+				<DriverProgression />
 
 			</div>
 		);
 	}
 }
 
+
+
 // provide navigation (using router Links)
-class DriverNavigator extends Component {
+class DriverNavigator extends ExtensibleNavigatorComponent {
 	render() {
 		return (
 			<div>
 				<h2>View stats</h2>
 				<div  className="flex-container flex-space-around component">
-					<div className="flex-1-3 navigator-box">
-						<Link to="/">
-							<img src={imgRace} alt="home" className="navigator-img"></img>
-							<h3>Home</h3>
-						</Link>
-					</div>
+					{ this.getNavCard('/driver', 'Fastest Lap', imgVettel) }
 				</div>
 			</div>
 		);
@@ -159,8 +157,65 @@ class FastestLapByDriver extends Component {
 }
 
 
-class DriverProgression extends ExtensibleDataComponent {
 
+class DriverProgression extends ExtensibleDataComponent {
+	reqpath						= "driver/standings_progression/";
+	chartContainerId	= "driver-progression-chart-container";
+
+	constructor () {
+		super();
+
+		this.state = {
+			containerHeight: 100, containerWidth: 100,			// set initial values of plot container dimensions
+			plotData : [{ mode: "", name: "", x: [], y:[] }],
+			seasonSelected: "current",
+		}
+	}
+
+	render () {
+		return (
+			<div id="driver-progression-component" className="flex-container-column full-height">	
+				<h2>Driver Standings Progression</h2>
+
+				<div id={this.chartContainerId} className="flex-grow-3">
+					<Plot
+						data={ this.state.plotData }
+						layout={{
+							autosize:true, width: this.state.containerWidth, height: this.state.containerHeight,
+							title: "Driver Points Progression: " + this.state.season,
+							xaxis: { title: "Round number" }, yaxis: { title: "Points"}
+						}}
+					/>
+				</div>
+			</div>
+		);
+	}
+
+	do_request () {
+		var url = pitlaneApiBaseurl + this.reqpath + this.state.seasonSelected;
+		axios.get ( url ).then ( res => {
+			var processed_data = this.process_object_to_array ( res.data.fullname, res.data.points_after_round );
+			console.log ( processed_data );
+			this.setState ( {plotData: processed_data, season: res.data.year } );
+		}).catch ( err => { 
+			console.error(err); 
+		} );
+	}
+
+	// take in json object and arrays, spit out a nice array of objects
+	// in each object, x=array of rounds, y=array of scores in corresponding rounds, name=dataset name, mode="lines+markers"
+	process_object_to_array ( driver_arr, obj_arr, _mode="lines+markers" ) {
+		var ret = [];
+		for ( var i = 0; i < driver_arr.length; i++ ){
+			var obj = { mode: _mode, name:driver_arr[i], x: [], y: [] };
+			for ( var round in obj_arr[i] ){
+				obj.x.push ( round );									// push round number
+				obj.y.push ( obj_arr[i][round] );			// push score
+			}
+			ret.push ( obj );
+		}
+		return ret;
+	}
 }
 
 

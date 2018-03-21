@@ -68,6 +68,13 @@ class ExtensibleDataComponent extends Component {
 		this.pushStateChartContainerSize();
 	}
 
+	getSeasonsOptionsArray () {
+		if ( !this.props.season ) return null;
+		return this.props.seasons.map ( (year,i) => {
+			return ( <option key={i} value={year}>{year}</option> );
+		});
+	}
+
 
 }
 
