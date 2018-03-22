@@ -23,6 +23,7 @@ import {
 import { 
 	laptimeInSeconds, laptimeAsBullshitDate, liWrap,
 	getElementHeight, getElementWidth, 
+	process_object_to_array
 } from '../common-functions';
 
 
@@ -43,6 +44,7 @@ class DriverWrapper extends ExtensiblePageWrapperComponent {
 				<Switch>
 					<Route path="/driver/fastest-lap" component={() => <FastestLapByDriver seasons={this.state.seasons} /> } />
 					<Route path="/driver/progression" component={() => <DriverProgression seasons={this.state.seasons} /> } />
+					<Route path="/driver/laptimes" 		component={() => <DriverLaptimes seasons={this.state.seasons} /> } />
 					<Redirect to="/driver/fastest-lap" />
 				</Switch>
 			</div>
@@ -61,6 +63,7 @@ class DriverNavigator extends ExtensibleNavigatorComponent {
 				<div  className="flex-container flex-space-around component">
 					{ this.getNavCard('/driver/fastest-lap', 'Fastest Lap', imgVettel) }
 					{ this.getNavCard('/driver/progression', 'Points Progression', imgRedBull) }
+					{ this.getNavCard('/driver/laptimes', 'Laptimes', imgRace) }
 				</div>
 			</div>
 		);
@@ -219,6 +222,59 @@ class DriverProgression extends ExtensibleDataComponent {
 			ret.push ( obj );
 		}
 		return ret;
+	}
+}
+
+
+
+class DriverLaptimes extends ExtensibleDataComponent {
+	reqpath 				= "driver/laptimes/";
+	chartContainerId= "driver-race-laptime-chart-container";
+
+	constructor () {
+		super ()
+		this.state = {
+			chartType: "box",
+			containerHeight: 100, containerWidth: 100,			// set initial values of plot container dimensions
+			seasonSelected: "current", roundSelected: "last",
+		};
+	}
+
+	getPlot () {
+		switch ( this.state.chartType ){
+			case "box":
+
+		}
+	}
+
+	render () {
+		return (
+			<div id="driver-race-laptime-component" className="flex-container-column full-height">
+				<h2>Driver Lap Times </h2>
+
+				<div id={this.chartContainerId} className="flex-grow-3">
+					<Plot
+						data={ this.state.plotData }
+						layout={{
+							autosize:true, width: this.state.containerWidth, height: this.state.containerHeight,
+							title: "Driver Lap Times: " + this.state.season,
+							xaxis: { title: "Lap Time (s)" }, 
+						}}
+					/>
+				</div>
+			</div>
+		);
+	}
+
+	do_request () {
+		var url = pitlaneApiBaseurl + this.reqpath + `${this.state.seasonSelected}/${this.state.roundSelected}`;
+		axios.get ( url ).then ( res => {
+			var processed_data = process_object_to_array ( res.data.code, res.data.laptimes, "box-horizontal" );
+			console.log ( processed_data );
+			this.setState ( {plotData: processed_data, season: res.data.year } );
+		}).catch ( err => { 
+			console.error(err); 
+		});
 	}
 }
 

@@ -36,4 +36,32 @@ export function getElementWidth ( elementID ) {
 	}
 }
 
-//export { liWrap };
+// process responses in the form of a Postgres JSON pivot table; output an array of plottable objects
+// in each object, x=array of attrs, y=array of scores in corresponding attrs, name=dataset name, mode="lines+markers"
+export function process_object_to_array ( group, data_col, _mode="lines+markers" ) {
+	var ret = [];
+	for ( var i = 0; i < group.length; i++ ){
+
+		switch ( _mode ) {
+			case "lines+markers" : {
+				var obj = { mode: _mode, name:group[i], x: [], y: [] };
+				for ( var attr in data_col[i] ){
+					obj.x.push ( attr );				
+					obj.y.push ( data_col[i][attr] );	
+				}
+				break;
+			} case "box-horizontal" : {
+				var obj = { type: "box", name:group[i], x: [] };
+				for ( var attr in data_col[i] ) {
+					obj.x.push ( data_col[i][attr] );				// we can omit the y axis value for box charts
+				}
+				break;
+			}
+			default :
+				console.error ( "What the fuck dude? This mode isn't accepted" );
+		}
+
+		ret.push ( obj );
+	}
+	return ret;
+}
