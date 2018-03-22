@@ -28,13 +28,14 @@ def query ( q ) :
 
 
 # create a dict from results and column headers
-def dictify ( results, col_headers ):
+def dictify ( results, col_headers, custom_attrs={} ):
 	assert isinstance(results, list), "Error: results is NOT a list"			# make sure both are Lists (arrays)
 	assert isinstance(col_headers, list), "Error: col_headers is NOT a list"
+	assert isinstance(custom_attrs, dict), "Error: custom_attrs must be  dict"
 	ret = {}
 	for i in range ( len(col_headers) ):
 		ret [ col_headers[i] ] = [ row[i] for row in results ] 
-	return ret
+	return  { **ret, **custom_attrs }
 
 
 

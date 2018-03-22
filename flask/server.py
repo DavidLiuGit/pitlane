@@ -62,11 +62,12 @@ def team_standings_progression ( year ):
 	""".format( year )
 	q = postgres_pivot_json( q, "name", "round", "points", data_col_name="points_after_round" )	# group=team name, attr=round num, value=points
 	res, cols = query ( q )
-	response = dictify(res, cols)
+	response = dictify ( res, cols, custom_attrs={'year':year} )
 	response['year'] = year				# add the year attribute to the result dict
 	return dumps ( response )
 
 
+# get driver points standings progression throughout a season
 @app.route ( '/driver/standings_progression/<year>' )
 def driver_standings_progression ( year ):
 	year = year if year!="current" else current_year			# if year specified is "current", substitute it with current_year
@@ -79,8 +80,25 @@ def driver_standings_progression ( year ):
 	""".format ( year )
 	q = postgres_pivot_json ( q, "fullname", "round", "points", data_col_name="points_after_round" )
 	res, cols = query ( q )
-	response = dictify ( res, cols )
-	response['year'] = year
+	response = dictify ( res, cols, custom_attrs={'year':year} )
+	return dumps ( response )
+
+
+# get every driver's laptimes for a given year and race #
+@app.route ( '/driver/laptimes/<year>/<rnd>' )
+def driver_race_laptimes ( year, rnd ):
+	year = year if year!="current" else current_year			# if year specified is "current", substitute it with current_year
+	rnd = rnd if rnd!="last" else 1
+	q = """
+	SELECT d.code, l.lap, l.milliseconds
+	FROM "lapTimes" as l
+	INNER JOIN "races" as r ON r."raceId"=l."raceId"
+	INNER JOIN "drivers" as d ON d."driverId"=l."driverId"
+	WHERE r.year={yr} AND r.round={rnd}
+	""".format ( yr=year, rnd=rnd )
+	q = postgres_pivot_json ( q, "code", "lap", "milliseconds", data_col_name="laptimes" )
+	res, cols = query ( q )
+	response = dictify ( res, cols, custom_attrs={'year':year} )
 	return dumps ( response )
 
 
