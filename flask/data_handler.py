@@ -9,11 +9,7 @@ from traceback import print_exc
 conn = psycopg2.connect("dbname=f1 user=allah")
 cur = conn.cursor()
 
-# do a sample query to make sure that things work
-#cur.execute("""SELECT * from "constructorStandings" LIMIT 3""")
-#contents = cur.fetchall()
-#print ( [col[0] for col in cur.description] )
-#print ( contents )
+
 
 # use this function to do a query
 def query ( q ) :
@@ -25,6 +21,8 @@ def query ( q ) :
 	except Exception as e:
 		print_exc ( e )
 		conn.rollback()
+		return None
+
 
 
 # create a dict from results and column headers
@@ -35,6 +33,15 @@ def dictify ( results, col_headers, custom_attrs={} ):
 	ret = {}
 	for i in range ( len(col_headers) ):
 		ret [ col_headers[i] ] = [ row[i] for row in results ] 
+	return  { **ret, **custom_attrs }
+
+
+
+# create a dict where the result is just one tuple
+def dictify_oneline ( results, col_headers, custom_attrs={} ):
+	ret = {}
+	for i in range ( len(col_headers) ):
+		ret [ col_headers[i] ] = results[0][i]
 	return  { **ret, **custom_attrs }
 
 
@@ -54,3 +61,35 @@ def postgres_pivot_json ( query, group, attribute, value, order_by="ASC", data_c
     ORDER BY subq.{grp} {sort}
     """. format ( subquery=query, grp=group, attr=attribute, val=value, sort=order_by, c2=data_col_name )
     return q
+
+
+
+# process year & round - return a pair of processed year & round values, according to the following rules:
+#	year="current" or unspecified, round="last" or unspecified:		return curr_yr, last_race
+#	year is specified, round="last" or unspecified:					return specified year, last race of that year
+#	year="current" or unspecified, round is specified:				return curr_yr, info about specified round
+#	year is specified, round is specified:							return data from query
+def process_year_round ( year=None, rnd=None ):
+	if (year=="current" or year==current_year or year==None) and (rnd=="last" or rnd==None):			# current year, last race
+		return current_year, last_race
+	elif year!=None and (rnd=="last" or rnd==None) :				# some specified year, last round; must get round info
+		return year, dictify_oneline ( *query(""" SELECT * FROM races where races.year={} ORDER BY races."raceId" DESC LIMIT 1""".format(year)) )
+	elif (year=="current" or year==current_year or year==None) and rnd!=None :			
+		return current_year, dictify_oneline ( *query(""" SELECT * FROM races where races.year={}, races.round={} ORDER BY races."raceId" DESC LIMIT 1""".format(current_year,rnd)) )
+	elif year!=None and rnd!=None:
+		return year, dictify_oneline ( *query(""" SELECT * FROM races where races.year={}, races.round={} ORDER BY races."raceId" DESC LIMIT 1""".format(year,rnd)) )
+
+
+
+# do a sample query to make sure that things work
+# on initialization of server, try doing a query and determine the following:
+try :
+	current_year_results, headers = query ( """SELECT DISTINCT year, races."raceId" FROM results 
+		LEFT JOIN races ON results."raceId"=races."raceId" ORDER BY year DESC, races."raceId" DESC""" )
+	current_year = current_year_results[0][0]		# set the default "current" year to be the year the last race happened
+	last_race_id = current_year_results[0][1]		# set the default "last" raceId - again, the last race that happened
+	last_race_results, headers = query ( """SELECT * FROM races WHERE "raceId"={} """.format(last_race_id) )
+	last_race = dictify_oneline ( last_race_results, headers )
+except Exception as e:
+	print_exc ( e )
+	raise IOError ( 'Error: the server encountered an error when attempting the initial query.' )

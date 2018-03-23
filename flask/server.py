@@ -10,20 +10,17 @@ from traceback import print_exc
 
 # my modules
 import users
-from data_handler import query, dictify, postgres_pivot_json
+from data_handler import query, dictify, postgres_pivot_json, dictify_oneline, process_year_round
 
 # app config
 app = Flask(__name__)		
 CORS(app)					# allow cross-origin resource sharing
 
 
-# on initialization of server, try doing a query and determine the following:
-try :
-	current_year_results, headers = query ( """SELECT DISTINCT year FROM results LEFT JOIN races ON results."raceId"=races."raceId" ORDER BY year DESC""" )
-	current_year = current_year_results[0][0]		# set the default "current" year to be the year the last race happened
-except Exception as e:
-	print_exc ( e )
-	raise IOError ( 'Error: the server encountered an error when attempting the initial query.' )
+curr_year, last_rnd = process_year_round ( year="current", rnd="last" )
+print ( curr_year )
+print ( last_rnd )
+
 
 
 @app.route('/')
