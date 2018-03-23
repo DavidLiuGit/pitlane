@@ -7,9 +7,9 @@ import { Link, Route, Switch, Redirect } from 'react-router-dom';
 import Plot from 'react-plotly.js';
 
 // img
-import imgRace from '../img/race.jpg';
-import imgVettel from '../img/vettel.jpg';
-import imgRedBull from '../img/redbull.jpg';
+import svgLaptime from '../img/laptime.svg';
+import svgFastLap from '../img/fast-lap.svg';
+import svgDriverTrophy from '../img/driver-trophy.svg';
 
 // Material-UI
 import Select from 'material-ui/Select';
@@ -61,9 +61,9 @@ class DriverNavigator extends ExtensibleNavigatorComponent {
 			<div>
 				<h2>View stats</h2>
 				<div  className="flex-container flex-space-around component">
-					{ this.getNavCard('/driver/fastest-lap', 'Fastest Lap', imgVettel) }
-					{ this.getNavCard('/driver/progression', 'Points Progression', imgRedBull) }
-					{ this.getNavCard('/driver/laptimes', 'Laptimes', imgRace) }
+					{ this.getNavCard('/driver/fastest-lap', 'Fastest Lap', svgFastLap) }
+					{ this.getNavCard('/driver/progression', 'Points Progression', svgDriverTrophy) }
+					{ this.getNavCard('/driver/laptimes', 'Laptimes', svgLaptime) }
 				</div>
 			</div>
 		);
@@ -270,7 +270,6 @@ class DriverLaptimes extends ExtensibleDataComponent {
 		var url = pitlaneApiBaseurl + this.reqpath + `${this.state.seasonSelected}/${this.state.roundSelected}`;
 		axios.get ( url ).then ( res => {
 			var processed_data = process_object_to_array ( res.data.code, res.data.laptimes, "box-horizontal" );
-			console.log ( processed_data );
 			this.setState ( {plotData: processed_data, season: res.data.year } );
 		}).catch ( err => { 
 			console.error(err); 

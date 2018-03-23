@@ -97,7 +97,7 @@ class ExtensibleNavigatorComponent extends Component {
 		return (
 			<div className="flex-1-3 navigator-box">
 				<Link to={link}>
-					<img src={img} alt={title} className="navigator-img"></img>
+					<img src={img} alt={title} className="navigator-img transition-0-25"></img>
 					<h3>{title}</h3>
 				</Link>
 			</div>

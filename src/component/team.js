@@ -10,6 +10,7 @@ import Plot from 'react-plotly.js';
 import imgRace from '../img/race.jpg';
 import imgVettel from '../img/vettel.jpg';
 import imgRedBull from '../img/redbull.jpg';
+import svgTeamTrophy from '../img/constructor-trophy.svg';
 
 // material ui
 import Button from 'material-ui/Button';
@@ -68,7 +69,7 @@ class TeamNavigator extends ExtensibleNavigatorComponent {
 				<h2>View stats</h2>
 				<div  className="flex-container flex-space-around component">
 					{ this.getNavCard ( '/team/standings', 'Standings', imgRace ) }
-					{ this.getNavCard ( '/team/progression', 'Points Progression', imgRedBull ) }
+					{ this.getNavCard ( '/team/progression', 'Points Progression', svgTeamTrophy ) }
 				</div>
 			</div>
 		);
