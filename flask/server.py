@@ -67,7 +67,8 @@ def team_standings_progression ( year ):
 # get driver points standings progression throughout a season
 @app.route ( '/driver/standings_progression/<year>' )
 def driver_standings_progression ( year ):
-	year = year if year!="current" else current_year			# if year specified is "current", substitute it with current_year
+	#year = year if year!="current" else current_year			# if year specified is "current", substitute it with current_year
+	year, yolo = process_year_round ( year=year )
 	q = """
 	select forename || ' ' || surname as fullname, r.round, ds.points
 	FROM races as r
