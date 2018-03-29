@@ -18,7 +18,7 @@ import Select from 'material-ui/Select';
 import {
 	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap, 
 	pitlaneApiBaseurl, ExtensibleDataComponent, ExtensibleNavigatorComponent,
-	ExtensiblePageWrapperComponent
+	ExtensiblePageWrapperComponent, ExtensibleDataComponentWithRoundFetch
 }	from '../common-objects';
 import { 
 	laptimeInSeconds, laptimeAsBullshitDate, liWrap,
@@ -44,7 +44,7 @@ class DriverWrapper extends ExtensiblePageWrapperComponent {
 				<Switch>
 					<Route path="/driver/fastest-lap" component={() => <FastestLapByDriver seasons={this.state.seasons} /> } />
 					<Route path="/driver/progression" component={() => <DriverProgression seasons={this.state.seasons} /> } />
-					<Route path="/driver/laptimes" 		component={() => <DriverLaptimes seasons={this.state.seasons} /> } />
+					<Route path="/driver/laptimes" 		component={() => <DriverLaptimes seasons={this.state.seasons} rounds={this.state.rounds} /> } />
 					<Redirect to="/driver/fastest-lap" />
 				</Switch>
 			</div>
@@ -227,7 +227,7 @@ class DriverProgression extends ExtensibleDataComponent {
 
 
 
-class DriverLaptimes extends ExtensibleDataComponent {
+class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
 	reqpath 				= "driver/laptimes/";
 	chartContainerId= "driver-race-laptime-chart-container";
 
@@ -237,6 +237,7 @@ class DriverLaptimes extends ExtensibleDataComponent {
 			chartType: "box",
 			containerHeight: 100, containerWidth: 100,			// set initial values of plot container dimensions
 			seasonSelected: "current", roundSelected: "last",
+			rounds: {},
 		};
 	}
 
@@ -247,9 +248,11 @@ class DriverLaptimes extends ExtensibleDataComponent {
 		}
 	}
 
+	/*
 	getRoundOptionsArray ( season ) {
 		return null;
 	}
+	*/
 
 	render () {
 		return (
@@ -265,7 +268,7 @@ class DriverLaptimes extends ExtensibleDataComponent {
 					<span> Select race: &nbsp;
 						<select value={this.state.roundSelected} className="pill"
 							onChange={event => { this.setState({ roundSelected: event.target.value })} }>
-							{ this.getRoundOptionsArray() }
+							{ this.getRoundOptionsArray( this.state.seasonSelected ) }
 						</select>
 					</span>
 					<span>

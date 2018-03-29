@@ -38,19 +38,6 @@ export function getElementWidth ( elementID ) {
 	}
 }
 
-// get information about the races in a year (for which race results are available)
-export function getRacesInYear ( year ) {
-	var url = pitlaneApiBaseurl + `year_round_lut/${year}`;//"year_round_lut";
-	return axios.get ( url ).then ( res => {
-		//res.data.year.unshift("current");
-		const data = res.data;
-		//this.setState ( {seasons: data} );
-		console.log ( data );
-		return data;
-	}).catch (
-		err => console.error ( err )
-	)
-}
 
 // process responses in the form of a Postgres JSON pivot table; output an array of plottable objects
 // in each object, x=array of attrs, y=array of scores in corresponding attrs, name=dataset name, mode="lines+markers"

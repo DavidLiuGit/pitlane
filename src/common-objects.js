@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import {
-	getElementHeight, getElementWidth, getRacesInYear
+	getElementHeight, getElementWidth,
 } from './common-functions';
 
 
@@ -87,8 +87,42 @@ class ExtensibleDataComponent extends Component {
 			return ( <option key={i} value={year}>{year}</option> );
 		});
 	}
+}
 
+// another extensible chart - this one adds support for fetching year_round_lut lookups
+class ExtensibleDataComponentWithRoundFetch extends ExtensibleDataComponent {
+	fetchRacesInYear ( year ) {
+		console.log ( "fetching rnds for " + year );
+		var url = pitlaneApiBaseurl + `year_round_lut/${year}`;
+		axios.get ( url ).then ( res => {
+			this.setState ( { rounds : { [year]: res.data} } );
+		}).catch (
+			err => console.error ( err )
+		)
+	}
 
+	getRoundOptionsArray ( year ) {
+		// if year is "current", look for it in props
+		if ( year == "current" ) {
+			if ( this.props.rounds && "current" in this.props.rounds ){
+				return Object.keys(this.props.rounds[year]).reverse().map ( (rnd,i) => {
+					return ( <option key={rnd} value={rnd}>{rnd}</option> );
+				});
+			} else return null;
+		}
+			
+		// if year is NOT current, look for it in state.rounds; if it isn't there, fetch it from server
+		if ( year in this.state.rounds ) {
+			return Object.keys ( this.state.rounds[year] ).reverse().map ( (rnd,i) => {
+				return ( <option key={rnd} value={rnd}>{rnd}</option> );
+			});
+		} else {
+			this.fetchRacesInYear ( year );		// this will trigger setState; which will trigger this function again
+			return ( <option value="" disabled>Loading...</option> );
+		}
+
+		return null;
+	}
 }
 
 // note that the "Extensible" prefix implies that the class is a "template" or meant to be abstract
@@ -115,21 +149,30 @@ class ExtensiblePageWrapperComponent extends Component {
 	}
 
 	componentDidMount () {
-		this.getSeasonsArray();
-		this.setState ( { "rounds": getRacesInYear( "current" ) } );
+		this.fetchSeasonsArray();
+		this.fetchRacesInYear ("current");
+		//console.log ( result );
+		//this.setState ( { "rounds": getRacesInYear( "current" ) } );
 	}
 
-	getSeasonsArray () {
+	fetchSeasonsArray () {
 		var url = pitlaneApiBaseurl + "seasons";
 		axios.get ( url ).then ( res => {
 			res.data.year.unshift("current");
 			const data = res.data.year;
 			this.setState ( {seasons: data} );
-			//console.log ( "wrapper setstate done");
 		}).catch (
 			err => console.error ( err )
 		)
-		//console.log ( "page wrapper mounted and done!");
+	}
+
+	fetchRacesInYear ( year ) {
+		var url = pitlaneApiBaseurl + `year_round_lut/${year}`;
+		axios.get ( url ).then ( res => {
+			this.setState ( { "rounds": { [year]: res.data } } );
+		}).catch (
+			err => console.error ( err )
+		)
 	}
 }
 
@@ -147,4 +190,5 @@ export {
 	ExtensibleDataComponent,
 	ExtensibleNavigatorComponent,
 	ExtensiblePageWrapperComponent,
+	ExtensibleDataComponentWithRoundFetch,
 };
