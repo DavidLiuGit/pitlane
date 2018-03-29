@@ -10,7 +10,7 @@ from traceback import print_exc
 
 # my modules
 import users
-from data_handler import query, dictify, postgres_pivot_json, dictify_oneline, process_year_round
+from data_handler import query, dictify, postgres_pivot_json, dictify_oneline, process_year_round, YEAR_ROUND_LUT
 
 # app config
 app = Flask(__name__)		
@@ -114,6 +114,16 @@ def driver_race_laptimes_from_raceId ( raceId ) :
 	response = dictify ( res, cols )
 	return dumps ( response )
 
+
+@app.route ( '/year_round_lut' )
+def return_year_round_lut () :
+	return dumps ( YEAR_ROUND_LUT )
+
+@app.route ( '/year_round_lut/<year>')
+def return_year_rounds ( year ):
+	year, rnd = process_year_round ( year=year )
+	print ( year )
+	return dumps ( YEAR_ROUND_LUT[str(year)] )
 
 # launch server with: python server.py
 if __name__ == "__main__":
