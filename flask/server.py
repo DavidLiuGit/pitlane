@@ -86,14 +86,14 @@ def driver_standings_progression ( year ):
 # get every driver's laptimes for a given year and race #
 @app.route ( '/driver/laptimes/<year>/<rnd>' )
 def driver_race_laptimes ( year, rnd ):
-	year, rnd = process_year_round ( year=year, rnd=rnd)
+	year, rnd = process_year_round ( year=year, rnd=rnd )
 	q = """
 	SELECT d.code, l.lap, round(l.milliseconds/1000.0, 3) as seconds
 	FROM "lapTimes" as l
 	INNER JOIN "races" as r ON r."raceId"=l."raceId"
 	INNER JOIN "drivers" as d ON d."driverId"=l."driverId"
 	WHERE r.year={yr} AND r.round={rnd}
-	""".format ( yr=year, rnd=rnd['round'] )
+	""".format ( yr=year, rnd=rnd )
 	q = postgres_pivot_json ( q, "code", "lap", "seconds", data_col_name="laptimes" )
 	res, cols = query ( q )
 	response = dictify ( res, cols, custom_attrs={'year':year} )

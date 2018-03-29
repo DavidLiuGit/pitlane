@@ -241,19 +241,6 @@ class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
 		};
 	}
 
-	getPlot () {
-		switch ( this.state.chartType ){
-			case "box":
-
-		}
-	}
-
-	/*
-	getRoundOptionsArray ( season ) {
-		return null;
-	}
-	*/
-
 	render () {
 		return (
 			<div id="driver-race-laptime-component" className="flex-container-column full-height">

@@ -89,13 +89,13 @@ def postgres_pivot_json ( query, group, attribute, value, order_by="ASC", data_c
 #	year is specified, round is specified:							return data from query
 def process_year_round ( year=None, rnd=None ):
 	if (year=="current" or year==current_year or year==None) and (rnd=="last" or rnd==None):			# current year, last race
-		return current_year, last_race
+		return current_year, last_race['round']
 	elif year!=None and (rnd=="last" or rnd==None) :				# some specified year, last round; must get round info
-		return year, YEAR_ROUND_LUT[str(year)][max(YEAR_ROUND_LUT[str(year)], key=int)]
-	elif (year=="current" or year==current_year or year==None) and rnd!=None :			
-		return current_year, YEAR_ROUND_LUT[str(year)][max(YEAR_ROUND_LUT[str(year)], key=int)]
+		return year, max(YEAR_ROUND_LUT[str(year)] , key=int)
+	elif (year=="current" or year==current_year or year==None) and rnd!=None :	
+		return current_year, rnd
 	elif year!=None and rnd!=None:
-		return year, YEAR_ROUND_LUT[str(year)][max(YEAR_ROUND_LUT[str(year)], key=int)]
+		return year, rnd 
 
 
 # build a year + round lookup table
@@ -118,7 +118,7 @@ def create_year_round_lut ():
 try :
 	current_year_results, headers = query ( """SELECT DISTINCT year, races."raceId" FROM results 
 		LEFT JOIN races ON results."raceId"=races."raceId" ORDER BY year DESC, races."raceId" DESC""" )
-	current_year = current_year_results[0][0]		# set the default "current" year to be the year the last race happened
+	current_year = str(current_year_results[0][0])		# set the default "current" year to be the year the last race happened
 	last_race_id = current_year_results[0][1]		# set the default "last" raceId - again, the last race that happened
 	last_race_results, headers = query ( """SELECT * FROM races WHERE "raceId"={} """.format(last_race_id) )
 	last_race = dictify_oneline ( last_race_results, headers )

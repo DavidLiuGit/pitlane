@@ -106,7 +106,7 @@ class ExtensibleDataComponentWithRoundFetch extends ExtensibleDataComponent {
 		if ( year == "current" ) {
 			if ( this.props.rounds && "current" in this.props.rounds ){
 				return Object.keys(this.props.rounds[year]).reverse().map ( (rnd,i) => {
-					return ( <option key={rnd} value={rnd}>{rnd}</option> );
+					return ( <option key={rnd} value={rnd}>{this.props.rounds[year][rnd]['race_name']}</option> );
 				});
 			} else return null;
 		}
@@ -114,14 +114,14 @@ class ExtensibleDataComponentWithRoundFetch extends ExtensibleDataComponent {
 		// if year is NOT current, look for it in state.rounds; if it isn't there, fetch it from server
 		if ( year in this.state.rounds ) {
 			return Object.keys ( this.state.rounds[year] ).reverse().map ( (rnd,i) => {
-				return ( <option key={rnd} value={rnd}>{rnd}</option> );
+				return ( <option key={rnd} value={rnd}>{this.state.rounds[year][rnd]['race_name']}</option> );
 			});
 		} else {
 			this.fetchRacesInYear ( year );		// this will trigger setState; which will trigger this function again
-			return ( <option value="" disabled>Loading...</option> );
+			return ( <option value="" disabled>Loading...</option> );		// return a loading "message"
 		}
 
-		return null;
+		return null;							// when nothing else works
 	}
 }
 
