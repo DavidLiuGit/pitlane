@@ -247,10 +247,31 @@ class DriverLaptimes extends ExtensibleDataComponent {
 		}
 	}
 
+	getRoundOptionsArray ( season ) {
+		return null;
+	}
+
 	render () {
 		return (
 			<div id="driver-race-laptime-component" className="flex-container-column full-height">
 				<h2>Driver Lap Times </h2>
+				<span className="align-left options-bar">
+					<span> Select season: &nbsp;
+						<select value={this.state.seasonSelected} className="pill" 
+							onChange={event => { this.setState({ seasonSelected: event.target.value })} }>
+							{ this.getSeasonsOptionsArray() }
+						</select>
+					</span>
+					<span> Select race: &nbsp;
+						<select value={this.state.roundSelected} className="pill"
+							onChange={event => { this.setState({ roundSelected: event.target.value })} }>
+							{ this.getRoundOptionsArray() }
+						</select>
+					</span>
+					<span>
+						<button className="btn pill primary transition-0-15" onClick={this.do_request.bind(this)} >Change Race</button>
+					</span>
+				</span>
 
 				<div id={this.chartContainerId} className="flex-grow-3">
 					<Plot

@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import {
-	getElementHeight, getElementWidth, 
+	getElementHeight, getElementWidth, getRacesInYear
 } from './common-functions';
 
 
@@ -116,6 +116,7 @@ class ExtensiblePageWrapperComponent extends Component {
 
 	componentDidMount () {
 		this.getSeasonsArray();
+		this.setState ( { "rounds": getRacesInYear( "current" ) } );
 	}
 
 	getSeasonsArray () {
@@ -124,11 +125,11 @@ class ExtensiblePageWrapperComponent extends Component {
 			res.data.year.unshift("current");
 			const data = res.data.year;
 			this.setState ( {seasons: data} );
-			console.log ( "wrapper setstate done");
+			//console.log ( "wrapper setstate done");
 		}).catch (
 			err => console.error ( err )
 		)
-		console.log ( "page wrapper mounted and done!");
+		//console.log ( "page wrapper mounted and done!");
 	}
 }
 

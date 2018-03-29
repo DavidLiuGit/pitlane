@@ -28,6 +28,7 @@ export default class Navbar extends Component {
 					<path d="M4 8 L28 8 M4 16 L28 16 M4 24 L28 24" />
 				</svg>
 				<Link to="/"><span>Home</span></Link>
+				<Link to="/race"><span>Race</span></Link>
 				<Link to="/driver"><span>Drivers</span></Link>
 				<Link to="/team"><span>Team</span></Link>
 

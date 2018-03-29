@@ -14,6 +14,7 @@ import './css/responsive.css';
 import './css/animation.css';
 
 // components
+import RaceWrapper from './component/race';
 import DriverWrapper from './component/driver';
 import TeamWrapper from './component/team';
 import Navbar from './component/navbar';
@@ -45,6 +46,7 @@ class App extends Component {
 				<Navbar />
 
 				<Switch>
+					<Route path="/race" component={RaceWrapper}/>
 					<Route path="/driver" component={DriverWrapper}/>
 					<Route path="/team" component={TeamWrapper}/>
 					<Route path="/" component={Body}/>

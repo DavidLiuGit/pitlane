@@ -1,5 +1,7 @@
 // common functions/methods
 import React from 'react';
+import axios from 'axios';
+import { pitlaneApiBaseurl } from './common-objects';
 
 // wrap whatever you passed in with <li>; props options
 export function liWrap ( input, props = null ) {
@@ -34,6 +36,20 @@ export function getElementWidth ( elementID ) {
 	} catch (e) {
 		return 0;
 	}
+}
+
+// get information about the races in a year (for which race results are available)
+export function getRacesInYear ( year ) {
+	var url = pitlaneApiBaseurl + `year_round_lut/${year}`;//"year_round_lut";
+	return axios.get ( url ).then ( res => {
+		//res.data.year.unshift("current");
+		const data = res.data;
+		//this.setState ( {seasons: data} );
+		console.log ( data );
+		return data;
+	}).catch (
+		err => console.error ( err )
+	)
 }
 
 // process responses in the form of a Postgres JSON pivot table; output an array of plottable objects
