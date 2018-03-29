@@ -122,7 +122,6 @@ def return_year_round_lut () :
 @app.route ( '/year_round_lut/<year>')
 def return_year_rounds ( year ):
 	year, rnd = process_year_round ( year=year )
-	print ( year )
 	return dumps ( YEAR_ROUND_LUT[str(year)] )
 
 # launch server with: python server.py
