@@ -91,12 +91,11 @@ def process_year_round ( year=None, rnd=None ):
 	if (year=="current" or year==current_year or year==None) and (rnd=="last" or rnd==None):			# current year, last race
 		return current_year, last_race
 	elif year!=None and (rnd=="last" or rnd==None) :				# some specified year, last round; must get round info
-		return year, dictify_oneline ( *query(""" SELECT * FROM races where races.year={} ORDER BY races."raceId" DESC LIMIT 1""".format(year)) )
+		return year, YEAR_ROUND_LUT[str(year)][max(YEAR_ROUND_LUT[str(year)], key=int)]
 	elif (year=="current" or year==current_year or year==None) and rnd!=None :			
-		return current_year, dictify_oneline ( *query(""" SELECT * FROM races WHERE races.year={} AND races.round={} ORDER BY races."raceId" DESC LIMIT 1""".format(current_year,rnd)) )
+		return current_year, YEAR_ROUND_LUT[str(year)][max(YEAR_ROUND_LUT[str(year)], key=int)]
 	elif year!=None and rnd!=None:
-		return year, dictify_oneline ( *query(""" SELECT * FROM races WHERE races.year={} AND races.round={} ORDER BY races."raceId" DESC LIMIT 1""".format(year,rnd)) )
-
+		return year, YEAR_ROUND_LUT[str(year)][max(YEAR_ROUND_LUT[str(year)], key=int)]
 
 
 # build a year + round lookup table
