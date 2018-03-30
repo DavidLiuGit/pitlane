@@ -87,6 +87,8 @@ class ExtensibleDataComponent extends Component {
 			return ( <option key={i} value={year}>{year}</option> );
 		});
 	}
+
+	do_request () { return; }
 }
 
 // another extensible chart - this one adds support for fetching year_round_lut lookups

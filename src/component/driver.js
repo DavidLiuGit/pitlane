@@ -232,7 +232,7 @@ class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
 	chartContainerId= "driver-race-laptime-chart-container";
 
 	constructor () {
-		super ()
+		super ();
 		this.state = {
 			chartType: "box",
 			containerHeight: 100, containerWidth: 100,			// set initial values of plot container dimensions
