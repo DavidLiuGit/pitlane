@@ -37,11 +37,14 @@ def result_validate ( results, col_headers, custom_attrs ):
 
 # create a dict from results and column headers
 # the column headers are keys, whose values are arrays of the results
-def dictify ( results, col_headers, custom_attrs={} ):
+def dictify ( results, col_headers, custom_attrs={}, ignore_null=True ):
 	if not result_validate(results, col_headers, custom_attrs) :	return False
 	ret = {}
 	for i in range ( len(col_headers) ):
-		ret [ col_headers[i] ] = [ row[i] for row in results ] 
+		ret [ col_headers[i] ] = [ row[i] for row in results ]
+	if ignore_null:							# if we need to delete None from lists
+		ret = { k:list(filter(None.__ne__, v)) for k, v in ret.items()}	# iterate over each key-value pair in response dict and filter out None (but not other falsy values, like 0)
+	#pprint ( ret )
 	return  { **ret, **custom_attrs }
 
 
@@ -97,6 +100,11 @@ def process_year_round ( year=None, rnd=None ):
 	elif year!=None and rnd!=None:
 		return year, rnd
 	return None
+
+
+# raceId lookup from year, round
+def raceID_lookup ( year, rnd ):
+	return YEAR_ROUND_LUT [year] [rnd] ['raceId']
 
 
 # build a year + round lookup table

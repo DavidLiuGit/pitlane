@@ -7,10 +7,11 @@ from flask_cors import CORS
 # utility modules
 from json import dumps
 from traceback import print_exc
+from pprint import pprint
 
 # my modules
 import users
-from data_handler import query, dictify, postgres_pivot_json, dictify_oneline, process_year_round, YEAR_ROUND_LUT
+from data_handler import query, dictify, postgres_pivot_json, dictify_oneline, process_year_round, YEAR_ROUND_LUT, raceID_lookup
 
 # app config
 app = Flask(__name__)		
@@ -27,11 +28,6 @@ print ( last_rnd )
 def hello_world():
 	return 'Hello, World!'
 
-
-@app.route( '/login', methods=['GET', 'POST'] )
-def fake_login():
-	if request.method == 'POST':
-		pass
 		
 
 @app.route ( '/echoback/<msg>' )
@@ -39,14 +35,14 @@ def echoback( msg ):
 	return dumps ( msg )
 
 
-# return list of seasons in the database for which there are results
-@app.route ( '/seasons' )
-def get_seasons () :		# SELECT year FROM seasons ORDER BY year DESC - get ALL years in database
-	res, cols = query ( """SELECT DISTINCT year FROM results LEFT JOIN races ON results."raceId"=races."raceId" ORDER BY year DESC""" )
-	return dumps ( dictify (res, cols) )
 
 
-# return 
+
+
+###############################################################################
+#	TEAM
+###############################################################################
+
 @app.route ( '/team/standings_progression/<year>')
 def team_standings_progression ( year ):
 	#year = year if year!="current" else current_year			# if year specified is "current", substitute it with current_year
@@ -64,6 +60,13 @@ def team_standings_progression ( year ):
 	response['year'] = year				# add the year attribute to the result dict
 	return dumps ( response )
 
+
+
+
+
+###############################################################################
+#	DRIVER
+###############################################################################
 
 # get driver points standings progression throughout a season
 @app.route ( '/driver/standings_progression/<year>' )
@@ -115,6 +118,26 @@ def driver_race_laptimes_from_raceId ( raceId ) :
 	return dumps ( response )
 
 
+
+
+
+###############################################################################
+#	RACE
+###############################################################################
+
+@app.route ( '/race/quali_laptimes/<year>/<rnd>' )
+def quali_laptimes_by_round ( year, rnd ) :
+	raceId = raceID_lookup ( *process_year_round(year, rnd) )
+	q = """SELECT q1, q2, q3 FROM qualifying WHERE "raceId"={}""".format ( raceId )
+	return dumps ( dictify ( *query(q) ) )
+
+
+
+
+###############################################################################
+#	COMMON / UTILITY
+###############################################################################
+
 @app.route ( '/year_round_lut' )
 def return_year_round_lut () :
 	return dumps ( YEAR_ROUND_LUT )
@@ -123,6 +146,18 @@ def return_year_round_lut () :
 def return_year_rounds ( year ):
 	year, rnd = process_year_round ( year=year )
 	return dumps ( YEAR_ROUND_LUT[str(year)] )
+
+# return list of seasons in the database for which there are results
+@app.route ( '/seasons' )
+def get_seasons () :		# SELECT year FROM seasons ORDER BY year DESC - get ALL years in database
+	res, cols = query ( """SELECT DISTINCT year FROM results LEFT JOIN races ON results."raceId"=races."raceId" ORDER BY year DESC""" )
+	return dumps ( dictify (res, cols) )
+
+
+
+###############################################################################
+#	MAIN / GLOBAL
+###############################################################################
 
 # launch server with: python server.py
 if __name__ == "__main__":
