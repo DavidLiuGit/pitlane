@@ -95,7 +95,8 @@ def process_year_round ( year=None, rnd=None ):
 	elif (year=="current" or year==current_year or year==None) and rnd!=None :	
 		return current_year, rnd
 	elif year!=None and rnd!=None:
-		return year, rnd 
+		return year, rnd
+	return None
 
 
 # build a year + round lookup table

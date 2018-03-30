@@ -96,7 +96,7 @@ def driver_race_laptimes ( year, rnd ):
 	""".format ( yr=year, rnd=rnd )
 	q = postgres_pivot_json ( q, "code", "lap", "seconds", data_col_name="laptimes" )
 	res, cols = query ( q )
-	response = dictify ( res, cols, custom_attrs={'year':year} )
+	response = dictify ( res, cols, custom_attrs={'year':year, 'round':rnd} )
 	return dumps ( response )
 
 
