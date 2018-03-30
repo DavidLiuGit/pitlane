@@ -151,8 +151,6 @@ class ExtensiblePageWrapperComponent extends Component {
 	componentDidMount () {
 		this.fetchSeasonsArray();
 		this.fetchRacesInYear ("current");
-		//console.log ( result );
-		//this.setState ( { "rounds": getRacesInYear( "current" ) } );
 	}
 
 	fetchSeasonsArray () {

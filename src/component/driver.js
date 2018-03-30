@@ -268,7 +268,7 @@ class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
 						data={ this.state.plotData }
 						layout={{
 							autosize:true, width: this.state.containerWidth, height: this.state.containerHeight,
-							title: "Driver Lap Times: " + this.state.season,
+							title: "Driver Lap Times: " + this.state.season + ' round ' + this.state.round,
 							xaxis: { title: "Lap Time (s)" }, 
 						}}
 					/>
@@ -280,8 +280,8 @@ class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
 	do_request () {
 		var url = pitlaneApiBaseurl + this.reqpath + `${this.state.seasonSelected}/${this.state.roundSelected}`;
 		axios.get ( url ).then ( res => {
-			var processed_data = process_object_to_array ( res.data.code, res.data.laptimes, "box-horizontal" );
-			this.setState ( {plotData: processed_data, season: res.data.year } );
+			var processed_data = process_object_to_array ( res.data.code, res.data.laptimes, "box-horizontal", {boxpoints: 'all', pointpos: 0,} );
+			this.setState ( {plotData: processed_data, season: res.data.year, round: res.data.round } );
 		}).catch ( err => { 
 			console.error(err); 
 		});
