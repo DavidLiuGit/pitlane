@@ -100,19 +100,19 @@ class Navigator extends Component {
 				<div  className="flex-container flex-space-between component">
 					<div className="flex-1-3 navigator-box">
 						<Link to="/#last-race">
-							<img src={imgRace} alt="race" className="navigator-img"></img>
+							<img src={imgRace} alt="race" className="navigator-img transition-0-25"></img>
 							<h3>Race</h3>
 						</Link>
 					</div>
 					<div className="flex-1-3 navigator-box">
 						<Link to="/driver">
-							<img src={imgVettel} alt="race" className="navigator-img"></img>
+							<img src={imgVettel} alt="race" className="navigator-img transition-0-25"></img>
 							<h3>Driver</h3>
 						</Link>
 					</div>
 					<div className="flex-1-3 navigator-box">
 						<Link to="/team">
-							<img src={imgRedBull} alt="race" className="navigator-img"></img>
+							<img src={imgRedBull} alt="race" className="navigator-img transition-0-25"></img>
 							<h3>Team</h3>
 						</Link>
 					</div>

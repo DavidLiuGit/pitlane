@@ -125,6 +125,28 @@ class ExtensibleDataComponentWithRoundFetch extends ExtensibleDataComponent {
 
 		return null;							// when nothing else works
 	}
+
+	elementSeasonSelect ( label="Select season:" ) {
+		return (
+			<span> {label} &nbsp;
+				<select value={this.state.seasonSelected} className="pill" 
+					onChange={event => { this.setState({ seasonSelected: event.target.value })} }>
+					{ this.getSeasonsOptionsArray () }
+				</select>
+			</span>
+		);
+	}
+
+	elementRoundSelect ( label="Select race:" ) {
+		return (
+			<span> { label } &nbsp;
+				<select value={this.state.roundSelected} className="pill"
+					onChange={event => { this.setState({ roundSelected: event.target.value })} }>
+					{ this.getRoundOptionsArray(this.state.seasonSelected ) }
+				</select>
+			</span>
+		);
+	}
 }
 
 // note that the "Extensible" prefix implies that the class is a "template" or meant to be abstract

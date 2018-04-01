@@ -16,6 +16,7 @@ import svgFastLap from '../img/fast-lap.svg';
 // common
 import {
 	ExtensiblePageWrapperComponent, ExtensibleDataComponent, ExtensibleNavigatorComponent,
+	ExtensibleDataComponentWithRoundFetch,
 } from '../common-objects';
 
 
@@ -53,7 +54,7 @@ class RaceNavigator extends ExtensibleNavigatorComponent {
 }
 
 
-class QualifyingLaptimeByRound extends ExtensibleDataComponent {
+class QualifyingLaptimeByRound extends ExtensibleDataComponentWithRoundFetch {
 	reqpath 					= "race/quali_laptimes";
 	chartContainerId	= "qualifying-lap-time-by-round-chart-container";
 
@@ -65,15 +66,22 @@ class QualifyingLaptimeByRound extends ExtensibleDataComponent {
 			//chartType= "box",
 		}
 
-		const hullo = ( <h2>Hello World</h2> );
 	}
 
 	
 	render () {
 		return (
 			<div id="qualifying-lap-time-by-round" className="flex-container-column full-height"> 
-				<h2>Yeet</h2>
-				{ this.hullo }
+				<h2>Qualifying Lap Time, by Round</h2>
+				<span className="align-left options-bar flex-container">
+					{ this.elementSeasonSelect () }
+					{ this.elementRoundSelect () }
+					<span>
+						<button className="btn pill primary transition-0-15" onClick={this.do_request.bind(this)} >Change Race</button>
+					</span>
+				</span>
+
+				
 			</div>
 		);
 	}

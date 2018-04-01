@@ -155,7 +155,7 @@ class FastestLapByDriver extends Component {
 			res => {
 				const results = res.data.MRData.RaceTable.Races["0"];
 				this.setState ( {race: results} );
-				console.log ( getElementHeight(this.chartContainerID) + ' ' + getElementWidth(this.chartContainerID) );
+				//console.log ( getElementHeight(this.chartContainerID) + ' ' + getElementWidth(this.chartContainerID) );
 			}
 		).catch(
 			err => { console.error(err); }
@@ -202,7 +202,7 @@ class DriverProgression extends ExtensibleDataComponent {
 		var url = pitlaneApiBaseurl + this.reqpath + this.state.seasonSelected;
 		axios.get ( url ).then ( res => {
 			var processed_data = this.process_object_to_array ( res.data.fullname, res.data.points_after_round );
-			console.log ( processed_data );
+			//console.log ( processed_data );
 			this.setState ( {plotData: processed_data, season: res.data.year } );
 		}).catch ( err => { 
 			console.error(err); 
@@ -245,19 +245,9 @@ class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
 		return (
 			<div id="driver-race-laptime-component" className="flex-container-column full-height">
 				<h2>Driver Lap Times </h2>
-				<span className="align-left options-bar">
-					<span> Select season: &nbsp;
-						<select value={this.state.seasonSelected} className="pill" 
-							onChange={event => { this.setState({ seasonSelected: event.target.value })} }>
-							{ this.getSeasonsOptionsArray() }
-						</select>
-					</span>
-					<span> Select race: &nbsp;
-						<select value={this.state.roundSelected} className="pill"
-							onChange={event => { this.setState({ roundSelected: event.target.value })} }>
-							{ this.getRoundOptionsArray( this.state.seasonSelected ) }
-						</select>
-					</span>
+				<span className="align-left options-bar flex-container">
+					{ this.elementSeasonSelect () }
+					{ this.elementRoundSelect () }
 					<span>
 						<button className="btn pill primary transition-0-15" onClick={this.do_request.bind(this)} >Change Race</button>
 					</span>
