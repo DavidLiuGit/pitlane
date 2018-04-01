@@ -17,7 +17,9 @@ import svgFastLap from '../img/fast-lap.svg';
 import {
 	ExtensiblePageWrapperComponent, ExtensibleDataComponent, ExtensibleNavigatorComponent,
 	ExtensibleDataComponentWithRoundFetch,
+	pitlaneApiBaseurl,
 } from '../common-objects';
+import { process_object_to_array, laptimeInSeconds } from '../common-functions';
 
 
 
@@ -63,11 +65,8 @@ class QualifyingLaptimeByRound extends ExtensibleDataComponentWithRoundFetch {
 		this.state = {
 			containerHeight: 100, containerWidth: 100,													// initial values of plot container dimensions
 			seasonSelected: "current", roundSelected: "last", rounds: {},
-			//chartType= "box",
 		}
-
 	}
-
 	
 	render () {
 		return (
@@ -81,9 +80,40 @@ class QualifyingLaptimeByRound extends ExtensibleDataComponentWithRoundFetch {
 					</span>
 				</span>
 
+				<div id={this.chartContainerId} className="flex-grow-3">
+					<Plot
+						data={ this.state.plotData }
+						layout={{
+							autosize:true, width: this.state.containerWidth, height: this.state.containerHeight,
+							title: "Qualifying Lap Time Distribution: ", // + this.state.season + ' round ' + this.state.round,
+							xaxis: { title: "Lap Time (s)" }, yaxis: { title: "Qualifying Round" },
+						}}
+					/>
+				</div>
 				
 			</div>
 		);
+	}
+
+	do_request () {
+		var url = pitlaneApiBaseurl + `${this.reqpath}/${this.state.seasonSelected}/${this.state.roundSelected}`;
+		axios.get ( url ).then ( res => {
+			var processed_data = this.process_object_to_chart_array ( res.data, {boxpoints: 'all', pointpos: 0,} );
+			this.setState ( { plotData: processed_data } );
+			//console.log ( this.state.plotData );
+		}).catch ( err => console.error(err) );
+	}
+
+	// process response, in the form { q1: [...], q2: [...], ... }, to the form 
+	process_object_to_chart_array ( obj, custom_attrs=null ) {
+		var ret = [];
+		for ( var rnd in obj ){
+			var timeInSecondsArr = obj[rnd].map ( time => laptimeInSeconds ( time ) );
+			var chart_obj = { type: 'box', name: rnd, x: timeInSecondsArr };
+			if (custom_attrs) chart_obj = Object.assign ( chart_obj, custom_attrs);
+			ret.push ( chart_obj );
+		}
+		return ret;
 	}
 }
 

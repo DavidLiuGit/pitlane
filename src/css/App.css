@@ -83,7 +83,7 @@ div.component {
 	text-decoration: none;
 }
 
-.pill { border-radius: 500px; }
+.pill { border-radius: 500px; border-width: 1px; }
 .btn { 
 	padding: 0.5em 1em; 
 	font-size: 1em; 

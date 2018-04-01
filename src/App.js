@@ -99,7 +99,7 @@ class Navigator extends Component {
 				<h2>View stats by</h2>
 				<div  className="flex-container flex-space-between component">
 					<div className="flex-1-3 navigator-box">
-						<Link to="/#last-race">
+						<Link to="/race">
 							<img src={imgRace} alt="race" className="navigator-img transition-0-25"></img>
 							<h3>Race</h3>
 						</Link>
