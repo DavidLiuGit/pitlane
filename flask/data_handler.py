@@ -66,6 +66,14 @@ def dictify_rows ( results, col_headers, custom_attrs={} ):
 	return ret
 
 
+# create a nested dict, where keys of the outer dict are distinct values of some specified column;
+# keys of inner dict are col_headers, and values of inner dict are values of 
+def convert_to_dict_pivot_table ( results, key_col, col_headers, custom_attrs={} ) :
+	# try to get the index of the key_col (check if it already an integer)
+	pass
+
+
+
 
 # transform the query into a query that will return a postgres pivot table - see ./data/db.md for more details
 # in addition to the query, this function requires 3 more params:
