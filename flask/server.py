@@ -122,6 +122,7 @@ def driver_race_laptimes_from_raceId ( raceId ) :
 # get every driver's grid position delta (grid-position) for every race in a given year
 @app.route ( '/driver/grid_pos_delta/<year>' )
 def driver_grid_pos_delta ( year ):			
+	year, rnd = process_year_round ( year=year )
 	q = """
 	SELECT r.round, d."code", (select row_to_json(_) from (select grid, position as pos, laps) as _) as json_data
 	FROM results AS re
@@ -131,7 +132,7 @@ def driver_grid_pos_delta ( year ):
 	ORDER BY r."raceId" ASC, position ASC, laps DESC
 	""".format ( yr=year )
 	q = postgres_pivot_json ( q, "round", "code", "json_data", data_col_name="grid_pos_laps" )
-	response = dictify ( *query(q) )
+	response = dictify ( *query(q), custom_attrs={'year':year} )
 	return dumps ( response )
 
 
