@@ -44,7 +44,7 @@ class DriverWrapper extends ExtensiblePageWrapperComponent {
 				<Switch>
 					<Route path="/driver/fastest-lap" component={() => <FastestLapByDriver seasons={this.state.seasons} /> } />
 					<Route path="/driver/progression" component={() => <DriverProgression seasons={this.state.seasons} /> } />
-					<Route path="/driver/laptimes" 		component={() => <DriverLaptimes seasons={this.state.seasons} rounds={this.state.rounds} /> } />
+					<Route path="/driver/laptimes" component={() => <DriverLaptimes seasons={this.state.seasons} rounds={this.state.rounds} /> } />
 					<Redirect to="/driver/fastest-lap" />
 				</Switch>
 			</div>
@@ -82,37 +82,46 @@ class FastestLapByDriver extends Component {
 		super();
 
 		this.state = { 			// these variables will be used in rendering; initial values listed below
-			"race":{
+			"race": {
 				"raceName": "",
 				"Circuit" : { "circuitName": "" },
-				"date": 		"",
+				"date": "",
 				"Results": [
 					{Driver,Constructor,Time,FastestLap},			// data slots
 				]
+			},
+			"plot": {
+				"fastestLapsSeconds": "",
+				"driverCodeArray": ""
 			}
 		};
 	}
 
-	getDriverCodeArray () {
-		return this.state.race.Results.map ( result =>
-			{ return result.Driver.code; }
-		);
+	getDriverCodeArray (results=this.state.race) {
+		let ret = results.Results.map ( result => result.Driver.code );
+		return ret;
 	}
 
-	getFastestLapsAsDate () {
-		return this.state.race.Results.map ( result =>
+	getFastestLapsAsDate (results=this.state.race) {
+		return results.Results.map ( result =>
 			{ return laptimeAsBullshitDate (result.FastestLap.Time.time); }
 		);
 	}
 
-	getFastestLapsSeconds () {
-		return this.state.race.Results.map ( result =>
-			{ return laptimeInSeconds(result.FastestLap.Time.time); }
+	getFastestLapsSeconds (results=this.state.race) {
+		return results.Results.map ( result =>
+			{ 
+				try {
+					return laptimeInSeconds(result.FastestLap.Time.time); 
+				} catch (e) {
+					return NaN;
+				}
+			}
 		);
 	}
 
-	getFastestLaps () {
-		return this.state.race.Results.map ( result =>
+	getFastestLaps (results=this.state.race) {
+		return results.Results.map ( result =>
 			{ return result.FastestLap.Time; }
 		);
 	}
@@ -129,8 +138,8 @@ class FastestLapByDriver extends Component {
 							{
 								type: 'bar',
 								orientation: 'h',
-								x: this.getFastestLapsSeconds(),
-								y: this.getDriverCodeArray(),
+								x: this.state.plot.fastestLapsSeconds,
+								y: this.state.plot.driverCodeArray,
 							}
 						]}
 
@@ -139,7 +148,7 @@ class FastestLapByDriver extends Component {
 							width: getElementWidth(this.chartContainerID),
 							height: getElementHeight(this.chartContainerID),
 							title: 'Fastest Lap Time of Each Driver',
-							xaxis: { title: "Lap time (seconds)" },
+							xaxis: { title: "Lap time (seconds) - lower is better" },
 							yaxis: { title: "Driver (code)" }
 						}}
 					/>
@@ -153,9 +162,17 @@ class FastestLapByDriver extends Component {
 		var url = httpBaseUrl + this.raceReqpath + this.resultReqPath;
 		axios.get ( url ).then(
 			res => {
-				const results = res.data.MRData.RaceTable.Races["0"];
-				this.setState ( {race: results} );
-				//console.log ( getElementHeight(this.chartContainerID) + ' ' + getElementWidth(this.chartContainerID) );
+				const results = res.data.MRData.RaceTable.Races[0];
+				const plot = {
+					driverCodeArray: this.getDriverCodeArray(results),
+					fastestLapsSeconds: this.getFastestLapsSeconds(results)
+				}
+
+				this.setState ({ 
+					race: results, 
+					plot: plot
+				});
+				console.log ('FastestLapByDriver state', this.state);
 			}
 		).catch(
 			err => { console.error(err); }

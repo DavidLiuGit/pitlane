@@ -254,7 +254,7 @@ class TeamStandings extends ExtensibleDataComponent {
 
 	// make request to server
 	do_request () {
-		console.log ( "doing request" );
+		// console.log ( "doing request" );
 		//console.trace();
 		var url = httpBaseUrl + this.state.seasonSelected + '/' + this.roundReqpath + this.resultReqpath;
 		axios.get ( url ).then (
