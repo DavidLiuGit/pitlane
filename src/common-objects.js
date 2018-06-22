@@ -88,6 +88,17 @@ class ExtensibleDataComponent extends Component {
 		});
 	}
 
+	elementSeasonSelect ( label="Select season:" ) {
+		return (
+			<span> {label} &nbsp;
+				<select value={this.state.seasonSelected} className="pill" 
+					onChange={event => { this.setState({ seasonSelected: event.target.value })} }>
+					{ this.getSeasonsOptionsArray () }
+				</select>
+			</span>
+		);
+	}
+
 	do_request () { return; }
 }
 
@@ -126,16 +137,7 @@ class ExtensibleDataComponentWithRoundFetch extends ExtensibleDataComponent {
 		return null;							// when nothing else works
 	}
 
-	elementSeasonSelect ( label="Select season:" ) {
-		return (
-			<span> {label} &nbsp;
-				<select value={this.state.seasonSelected} className="pill" 
-					onChange={event => { this.setState({ seasonSelected: event.target.value })} }>
-					{ this.getSeasonsOptionsArray () }
-				</select>
-			</span>
-		);
-	}
+	
 
 	elementRoundSelect ( label="Select race:" ) {
 		return (
