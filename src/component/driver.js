@@ -41,12 +41,16 @@ class DriverWrapper extends ExtensiblePageWrapperComponent {
 
 				<hr />
 
-				<Switch>
+				{/* <Switch>
 					<Route path="/driver/fastest-lap" component={() => <FastestLapByDriver seasons={this.state.seasons} /> } />
 					<Route path="/driver/progression" component={() => <DriverProgression seasons={this.state.seasons} /> } />
 					<Route path="/driver/laptimes" component={() => <DriverLaptimes seasons={this.state.seasons} rounds={this.state.rounds} /> } />
 					<Redirect to="/driver/fastest-lap" />
-				</Switch>
+				</Switch> */}
+				
+				<FastestLapByDriver seasons={this.state.seasons} rounds={this.state.rounds}/><hr />
+				<DriverProgression seasons={this.state.seasons} /><hr />
+				<DriverLaptimes seasons={this.state.seasons} rounds={this.state.rounds} /><hr />
 			</div>
 		);
 	}
@@ -73,7 +77,7 @@ class DriverNavigator extends ExtensibleNavigatorComponent {
 
 
 // fastest lap by each driver, in a given race
-class FastestLapByDriver extends Component {
+class FastestLapByDriver extends ExtensibleDataComponentWithRoundFetch {
 	raceReqpath = "current/last/";				// by default, query for the last race that happened
 	resultReqPath = "results.json";				// we want results back in json, using default limits
 	chartContainerID = "fastest-lap-by-driver-chart-container";
@@ -82,18 +86,20 @@ class FastestLapByDriver extends Component {
 		super();
 
 		this.state = { 			// these variables will be used in rendering; initial values listed below
-			"race": {
-				"raceName": "",
-				"Circuit" : { "circuitName": "" },
-				"date": "",
-				"Results": [
+			race: {
+				raceName: "",
+				Circuit : { "circuitName": "" },
+				date: "",
+				Results: [
 					{Driver,Constructor,Time,FastestLap},			// data slots
 				]
 			},
-			"plot": {
-				"fastestLapsSeconds": "",
-				"driverCodeArray": ""
-			}
+			plot: {
+				fastestLapsSeconds: "",
+				driverCodeArray: ""
+			},
+			seasonSelected: "current", roundSelected: "last",
+			rounds: {},
 		};
 	}
 
@@ -120,17 +126,18 @@ class FastestLapByDriver extends Component {
 		);
 	}
 
-	getFastestLaps (results=this.state.race) {
-		return results.Results.map ( result =>
-			{ return result.FastestLap.Time; }
-		);
-	}
-
 	render(){
 		return(
 			<div id="fastest-lap-by-driver" className="flex-container-column full-height">
 				<h2>Fastest Lap of Each Driver</h2>
 
+				<span className="align-left options-bar flex-container">
+					{ this.elementSeasonSelect () }
+					{ this.elementRoundSelect () }
+					<span>
+						<button className="btn pill primary transition-0-15" onClick={this.dataRequest.bind(this)} >Change Race</button>
+					</span>
+				</span>
 
 				<div id={this.chartContainerID} className="flex-grow-3">
 					<Plot
@@ -159,7 +166,11 @@ class FastestLapByDriver extends Component {
 	}
 
 	componentDidMount () {
-		var url = httpBaseUrl + this.raceReqpath + this.resultReqPath;
+		this.dataRequest()
+	}
+
+	dataRequest () {
+		var url = `${httpBaseUrl}${this.state.seasonSelected}/${this.state.roundSelected}/${this.resultReqPath}`; //httpBaseUrl + this.raceReqpath + this.resultReqPath;		
 		axios.get ( url ).then(
 			res => {
 				const results = res.data.MRData.RaceTable.Races[0];
@@ -169,7 +180,7 @@ class FastestLapByDriver extends Component {
 				}
 
 				this.setState ({ 
-					race: results, 
+					race: results,
 					plot: plot
 				});
 				console.log ('FastestLapByDriver state', this.state);
