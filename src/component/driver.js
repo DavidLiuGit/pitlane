@@ -41,12 +41,16 @@ class DriverWrapper extends ExtensiblePageWrapperComponent {
 
 				<hr />
 
-				<Switch>
+				{/* <Switch>
 					<Route path="/driver/fastest-lap" component={() => <FastestLapByDriver seasons={this.state.seasons} /> } />
 					<Route path="/driver/progression" component={() => <DriverProgression seasons={this.state.seasons} /> } />
-					<Route path="/driver/laptimes" 		component={() => <DriverLaptimes seasons={this.state.seasons} rounds={this.state.rounds} /> } />
+					<Route path="/driver/laptimes" component={() => <DriverLaptimes seasons={this.state.seasons} rounds={this.state.rounds} /> } />
 					<Redirect to="/driver/fastest-lap" />
-				</Switch>
+				</Switch> */}
+				
+				<FastestLapByDriver seasons={this.state.seasons} rounds={this.state.rounds}/><hr />
+				<DriverProgression seasons={this.state.seasons} /><hr />
+				<DriverLaptimes seasons={this.state.seasons} rounds={this.state.rounds} /><hr />
 			</div>
 		);
 	}
@@ -73,7 +77,7 @@ class DriverNavigator extends ExtensibleNavigatorComponent {
 
 
 // fastest lap by each driver, in a given race
-class FastestLapByDriver extends Component {
+class FastestLapByDriver extends ExtensibleDataComponentWithRoundFetch {
 	raceReqpath = "current/last/";				// by default, query for the last race that happened
 	resultReqPath = "results.json";				// we want results back in json, using default limits
 	chartContainerID = "fastest-lap-by-driver-chart-container";
@@ -82,38 +86,43 @@ class FastestLapByDriver extends Component {
 		super();
 
 		this.state = { 			// these variables will be used in rendering; initial values listed below
-			"race":{
-				"raceName": "",
-				"Circuit" : { "circuitName": "" },
-				"date": 		"",
-				"Results": [
+			race: {
+				raceName: "",
+				Circuit : { "circuitName": "" },
+				date: "",
+				Results: [
 					{Driver,Constructor,Time,FastestLap},			// data slots
 				]
-			}
+			},
+			plot: {
+				fastestLapsSeconds: "",
+				driverCodeArray: ""
+			},
+			seasonSelected: "current", roundSelected: "last",
+			rounds: {},
 		};
 	}
 
-	getDriverCodeArray () {
-		return this.state.race.Results.map ( result =>
-			{ return result.Driver.code; }
-		);
+	getDriverCodeArray (results=this.state.race) {
+		let ret = results.Results.map ( result => result.Driver.code );
+		return ret;
 	}
 
-	getFastestLapsAsDate () {
-		return this.state.race.Results.map ( result =>
+	getFastestLapsAsDate (results=this.state.race) {
+		return results.Results.map ( result =>
 			{ return laptimeAsBullshitDate (result.FastestLap.Time.time); }
 		);
 	}
 
-	getFastestLapsSeconds () {
-		return this.state.race.Results.map ( result =>
-			{ return laptimeInSeconds(result.FastestLap.Time.time); }
-		);
-	}
-
-	getFastestLaps () {
-		return this.state.race.Results.map ( result =>
-			{ return result.FastestLap.Time; }
+	getFastestLapsSeconds (results=this.state.race) {
+		return results.Results.map ( result =>
+			{ 
+				try {
+					return laptimeInSeconds(result.FastestLap.Time.time); 
+				} catch (e) {
+					return NaN;
+				}
+			}
 		);
 	}
 
@@ -122,6 +131,13 @@ class FastestLapByDriver extends Component {
 			<div id="fastest-lap-by-driver" className="flex-container-column full-height">
 				<h2>Fastest Lap of Each Driver</h2>
 
+				<span className="align-left options-bar flex-container">
+					{ this.elementSeasonSelect () }
+					{ this.elementRoundSelect () }
+					<span>
+						<button className="btn pill primary transition-0-15" onClick={this.dataRequest.bind(this)} >Change Race</button>
+					</span>
+				</span>
 
 				<div id={this.chartContainerID} className="flex-grow-3">
 					<Plot
@@ -129,8 +145,8 @@ class FastestLapByDriver extends Component {
 							{
 								type: 'bar',
 								orientation: 'h',
-								x: this.getFastestLapsSeconds(),
-								y: this.getDriverCodeArray(),
+								x: this.state.plot.fastestLapsSeconds,
+								y: this.state.plot.driverCodeArray,
 							}
 						]}
 
@@ -139,7 +155,7 @@ class FastestLapByDriver extends Component {
 							width: getElementWidth(this.chartContainerID),
 							height: getElementHeight(this.chartContainerID),
 							title: 'Fastest Lap Time of Each Driver',
-							xaxis: { title: "Lap time (seconds)" },
+							xaxis: { title: "Lap time (seconds) - lower is better" },
 							yaxis: { title: "Driver (code)" }
 						}}
 					/>
@@ -150,12 +166,24 @@ class FastestLapByDriver extends Component {
 	}
 
 	componentDidMount () {
-		var url = httpBaseUrl + this.raceReqpath + this.resultReqPath;
+		this.dataRequest()
+	}
+
+	dataRequest () {
+		var url = `${httpBaseUrl}${this.state.seasonSelected}/${this.state.roundSelected}/${this.resultReqPath}`; //httpBaseUrl + this.raceReqpath + this.resultReqPath;		
 		axios.get ( url ).then(
 			res => {
-				const results = res.data.MRData.RaceTable.Races["0"];
-				this.setState ( {race: results} );
-				//console.log ( getElementHeight(this.chartContainerID) + ' ' + getElementWidth(this.chartContainerID) );
+				const results = res.data.MRData.RaceTable.Races[0];
+				const plot = {
+					driverCodeArray: this.getDriverCodeArray(results),
+					fastestLapsSeconds: this.getFastestLapsSeconds(results)
+				}
+
+				this.setState ({ 
+					race: results,
+					plot: plot
+				});
+				console.log ('FastestLapByDriver state', this.state);
 			}
 		).catch(
 			err => { console.error(err); }

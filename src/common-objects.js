@@ -88,6 +88,17 @@ class ExtensibleDataComponent extends Component {
 		});
 	}
 
+	elementSeasonSelect ( label="Select season:" ) {
+		return (
+			<span> {label} &nbsp;
+				<select value={this.state.seasonSelected} className="pill" 
+					onChange={event => { this.setState({ seasonSelected: event.target.value })} }>
+					{ this.getSeasonsOptionsArray () }
+				</select>
+			</span>
+		);
+	}
+
 	do_request () { return; }
 }
 
@@ -114,7 +125,7 @@ class ExtensibleDataComponentWithRoundFetch extends ExtensibleDataComponent {
 		}
 			
 		// if year is NOT current, look for it in state.rounds; if it isn't there, fetch it from server
-		if ( year in this.state.rounds ) {
+		if ( this.state.rounds && year in this.state.rounds ) {
 			return Object.keys ( this.state.rounds[year] ).reverse().map ( (rnd,i) => {
 				return ( <option key={rnd} value={rnd}>{this.state.rounds[year][rnd]['race_name']}</option> );
 			});
@@ -126,16 +137,7 @@ class ExtensibleDataComponentWithRoundFetch extends ExtensibleDataComponent {
 		return null;							// when nothing else works
 	}
 
-	elementSeasonSelect ( label="Select season:" ) {
-		return (
-			<span> {label} &nbsp;
-				<select value={this.state.seasonSelected} className="pill" 
-					onChange={event => { this.setState({ seasonSelected: event.target.value })} }>
-					{ this.getSeasonsOptionsArray () }
-				</select>
-			</span>
-		);
-	}
+	
 
 	elementRoundSelect ( label="Select race:" ) {
 		return (
