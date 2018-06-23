@@ -33,10 +33,7 @@ class RaceWrapper extends ExtensiblePageWrapperComponent {
 
 				<hr />
 
-				<Switch>
-					<Route path="/race/quali_laptimes" component={() => <QualifyingLaptimeByRound seasons={this.state.seasons} rounds={this.state.rounds} /> } />
-					<Redirect to="/race/quali_laptimes" />
-				</Switch>
+				<QualifyingLaptimeByRound seasons={this.state.seasons} rounds={this.state.rounds} /><hr />
 			</div>
 		)
 	}

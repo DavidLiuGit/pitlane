@@ -45,14 +45,9 @@ class TeamWrapper extends ExtensiblePageWrapperComponent {
 				<TeamNavigator />
 
 				<hr />
-				{/*<TeamStandings seasons={this.state.seasons} />*/}
 				
-				<Switch>
-					<Route path="/team/standings" component={() => <TeamStandings seasons={this.state.seasons} />} />
-					<Route path="/team/progression" component={() => <TeamProgression seasons={this.state.seasons} />} />
-					<Redirect to="/team/standings" />
-					{/*<TeamStandings seasons={this.state.seasons} /> */}
-				</Switch>
+				<TeamStandings seasons={this.state.seasons} /><hr/>
+				<TeamProgression seasons={this.state.seasons} /><hr/>
 
 			</div>
 		);

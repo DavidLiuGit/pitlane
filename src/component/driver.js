@@ -40,13 +40,6 @@ class DriverWrapper extends ExtensiblePageWrapperComponent {
 				<DriverNavigator />
 
 				<hr />
-
-				{/* <Switch>
-					<Route path="/driver/fastest-lap" component={() => <FastestLapByDriver seasons={this.state.seasons} /> } />
-					<Route path="/driver/progression" component={() => <DriverProgression seasons={this.state.seasons} /> } />
-					<Route path="/driver/laptimes" component={() => <DriverLaptimes seasons={this.state.seasons} rounds={this.state.rounds} /> } />
-					<Redirect to="/driver/fastest-lap" />
-				</Switch> */}
 				
 				<FastestLapByDriver seasons={this.state.seasons} rounds={this.state.rounds}/><hr />
 				<DriverProgression seasons={this.state.seasons} /><hr />
@@ -88,7 +81,7 @@ class FastestLapByDriver extends ExtensibleDataComponentWithRoundFetch {
 		this.state = { 			// these variables will be used in rendering; initial values listed below
 			race: {
 				raceName: "",
-				Circuit : { "circuitName": "" },
+				Circuit : { circuitName: "" },
 				date: "",
 				Results: [
 					{Driver,Constructor,Time,FastestLap},			// data slots

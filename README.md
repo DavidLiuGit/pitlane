@@ -13,8 +13,7 @@ Statistics by driver:
 * lap times for each race as box-and-whiskers plot
 * average lap times for each race in season
 * points earned for each race in season
-* pit stop times for each race in season 
-* Grid positions gained/lost (cumulative over season; per race)
+* career points-per-race under current points system
 
 Statistics by team
 * all of the same statistics that can be found by driver, but aggregated by team
