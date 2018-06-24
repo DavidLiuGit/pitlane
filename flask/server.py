@@ -70,7 +70,7 @@ def pts_per_rnd_adjusted (year):
 def team_race_laptimes (year, rnd):
 	year, rnd = process_year_round (year=year, rnd=rnd)
 	q = """
-	SELECT c.name, l.lap, round(l.milliseconds/1000.0, 3) as seconds
+	SELECT c.name, l.lap * 10000 + l."driverId" as lap, round(l.milliseconds/1000.0, 3) as seconds
 	FROM "lapTimes" as l
 	INNER JOIN "races" as ra ON ra."raceId"=l."raceId"
 	INNER JOIN "results" as re ON l."driverId"=re."driverId" AND ra."raceId"=re."raceId"
