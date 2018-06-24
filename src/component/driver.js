@@ -77,8 +77,7 @@ class FastestLapByDriver extends ExtensibleDataComponentWithRoundFetch {
 
 	constructor () {
 		super();
-		// var state = mergeDeep (this.)
-		this.state = { 			// these variables will be used in rendering; initial values listed below
+		var state = {
 			race: {
 				raceName: "",
 				Circuit : { circuitName: "" },
@@ -91,9 +90,8 @@ class FastestLapByDriver extends ExtensibleDataComponentWithRoundFetch {
 				fastestLapsSeconds: "",
 				driverCodeArray: ""
 			},
-			seasonSelected: "current", roundSelected: "last",
-			rounds: {},
 		};
+		this.state = mergeDeep (state, this.defaultState);
 	}
 
 	getDriverCodeArray (results=this.state.race) {
