@@ -204,6 +204,12 @@ class DriverProgression extends ExtensibleDataComponent {
 		return (
 			<div id="driver-progression-component" className="flex-container-column full-height">	
 				<h2>Driver Standings Progression</h2>
+				<span className="align-left options-bar flex-container">
+					{ this.elementSeasonSelect () }
+					<span>
+						<button className="btn pill primary transition-0-15" onClick={this.do_request.bind(this)} >Change Race</button>
+					</span>
+				</span>
 
 				<div id={this.chartContainerId} className="flex-grow-3">
 					<Plot
