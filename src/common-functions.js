@@ -47,8 +47,14 @@ export function getElementWidth ( elementID ) {
 }
 
 
-// process responses in the form of a Postgres JSON pivot table; output an array of plottable objects
-// in each object, x=array of attrs, y=array of scores in corresponding attrs, name=dataset name, mode="lines+markers"
+/**
+ * Process responses in the form of a Postgres JSON pivot table; output an array of plottable objects
+ * in each object, x=array of attrs, y=array of scores in corresponding attrs, name=dataset name, mode="lines+markers" 
+ * @param {string} group key of the array containing labels of groups
+ * @param {string} data_col key of array containing the data
+ * @param {string} _mode chart mode; defaults to "line+markers"
+ * @param {object} custom_attrs object containing any custom attributes that should be 
+ */
 export function process_object_to_array ( group, data_col, _mode="lines+markers", custom_attrs=null ) {
 	var ret = [];
 	for ( var i = 0; i < group.length; i++ ){
