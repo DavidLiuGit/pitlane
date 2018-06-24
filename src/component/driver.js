@@ -23,7 +23,7 @@ import {
 import { 
 	laptimeInSeconds, laptimeAsBullshitDate, liWrap,
 	getElementHeight, getElementWidth, 
-	process_object_to_array
+	process_object_to_array, mergeDeep
 } from '../common-functions';
 
 
@@ -77,7 +77,7 @@ class FastestLapByDriver extends ExtensibleDataComponentWithRoundFetch {
 
 	constructor () {
 		super();
-
+		// var state = mergeDeep (this.)
 		this.state = { 			// these variables will be used in rendering; initial values listed below
 			race: {
 				raceName: "",
@@ -257,16 +257,6 @@ class DriverProgression extends ExtensibleDataComponent {
 class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
 	reqpath = "driver/laptimes/";
 	chartContainerId= "driver-race-laptime-chart-container";
-
-	constructor () {
-		super ();
-		this.state = {
-			chartType: "box",
-			containerHeight: 100, containerWidth: 100,			// set initial values of plot container dimensions
-			seasonSelected: "current", roundSelected: "last",
-			rounds: {},
-		};
-	}
 
 	render () {
 		return (
