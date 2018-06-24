@@ -8,8 +8,9 @@ import Plot from 'react-plotly.js';
 
 // img
 import imgRace from '../img/race.jpg';
-import imgVettel from '../img/vettel.jpg';
-import imgRedBull from '../img/redbull.jpg';
+// import imgVettel from '../img/vettel.jpg';
+// import imgRedBull from '../img/redbull.jpg';
+import svgLaptime from '../img/laptime.svg';
 import svgTeamTrophy from '../img/constructor-trophy.svg';
 
 // material ui
@@ -49,7 +50,7 @@ class TeamWrapper extends ExtensiblePageWrapperComponent {
 				
 				<TeamStandings seasons={this.state.seasons} /><hr/>
 				<TeamProgression seasons={this.state.seasons} /><hr/>
-				<TeamLaptimes seasons={this.state.seasons} rounds={this.state.rounds} /><hr/>
+				<TeamLaptimes seasons={this.state.seasons} rounds={this.state.rounds} />
 
 			</div>
 		);
@@ -67,6 +68,7 @@ class TeamNavigator extends ExtensibleNavigatorComponent {
 				<div  className="flex-container flex-space-around component">
 					{ this.getNavCard ( '/team/standings', 'Standings', imgRace ) }
 					{ this.getNavCard ( '/team/progression', 'Points Progression', svgTeamTrophy ) }
+					{ this.getNavCard ( '/driver/laptimes', 'Laptimes', svgLaptime ) }
 				</div>
 			</div>
 		);

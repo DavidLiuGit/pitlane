@@ -249,7 +249,7 @@ class DriverProgression extends ExtensibleDataComponent {
 
 
 class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
-	reqpath 				= "driver/laptimes/";
+	reqpath = "driver/laptimes/";
 	chartContainerId= "driver-race-laptime-chart-container";
 
 	constructor () {
