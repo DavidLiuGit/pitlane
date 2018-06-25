@@ -3,10 +3,6 @@ import React from 'react';
 import axios from 'axios';
 import { pitlaneApiBaseurl } from './common-objects';
 
-// wrap whatever you passed in with <li>; props options
-export function liWrap ( input, props = null ) {
-	return ( <li> {input} </li> );									// not set up to handle props yet!
-}
 
 // convert time in M:SS:mmm format to seconds (e.g. 1:24:831)
 /**
@@ -37,7 +33,10 @@ export function getElementHeight ( elementID ) {
 	}
 }
 
-// get elementWidth
+/**
+ * Get the width of an element, given its ID
+ * @param {string} elementID 
+ */
 export function getElementWidth ( elementID ) {
 	try {
 		return document.getElementById ( elementID ).offsetWidth;
@@ -86,6 +85,7 @@ export function process_object_to_array ( group, data_col, _mode="lines+markers"
 }
 
 
+
 /**
 * Performs a deep merge of objects and returns new object. Does not modify
 * objects (immutable) and merges arrays via concatenation.
@@ -119,3 +119,5 @@ export function mergeDeep (...objects) {
 	// console.log ( 'mergeDeep took', t1 - t0, 'ms to complete' );
 	return res;
 }
+
+

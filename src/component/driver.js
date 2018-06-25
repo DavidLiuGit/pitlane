@@ -21,7 +21,7 @@ import {
 	ExtensiblePageWrapperComponent, ExtensibleDataComponentWithRoundFetch
 }	from '../common-objects';
 import { 
-	laptimeInSeconds, laptimeAsBullshitDate, liWrap,
+	laptimeInSeconds, laptimeAsBullshitDate,
 	getElementHeight, getElementWidth, 
 	process_object_to_array, mergeDeep
 } from '../common-functions';
