@@ -129,12 +129,12 @@ export function mergeDeep (...objects) {
 export function computeMedian (arr) {
 	let a = arr.sort();
 	let len = a.length;
-	let mIndex = Math.floor (len % 2);
+	let mIndex = Math.floor (len / 2);		// the median index is half the length of the array, rounded down
 
 	if ( len % 2 )			// if the array has an odd-number of elements,
 		return a[mIndex];		// then we can simply return the value at the median
 	else					// but if the array has an even-number of elements,
-		return (a[mIndex-1] + a[mIndex]) / 2.0;		// return the mean of the 2 values in the middle
+		return ((a[mIndex-1] + a[mIndex]) / 2.0);	// return the mean of the 2 values in the middle
 }
 
 

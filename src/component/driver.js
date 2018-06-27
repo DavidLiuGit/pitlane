@@ -298,7 +298,6 @@ class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
 	 */
 	eliminateOutliers () {
 		if ( !this.state.plotData )	return;			// make sure we have data to work with
-		console.log ( this.state.plotData );
 		let newPlotData = this.state.plotData.map ( driverData => {
 			let res = boxplotAnalysis ( driverData.x );						// results of boxplot analysis
 			driverData.x = driverData.x.filter ( val => !isOutlier(val, res.q1, res.q3) );
