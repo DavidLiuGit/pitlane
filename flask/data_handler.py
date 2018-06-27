@@ -112,6 +112,7 @@ def process_year_round ( year=None, rnd=None ):
 
 # raceId lookup from year, round
 def raceID_lookup ( year, rnd ):
+	"""Given the year and round numbers, return the raceId, as it appears in the database"""
 	return YEAR_ROUND_LUT [str(year)] [str(rnd)] ['raceId']
 
 

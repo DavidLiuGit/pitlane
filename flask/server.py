@@ -61,6 +61,26 @@ def team_standings_progression ( year ):
 	return dumps ( response )
 
 
+@app.route ( '/team/points-per-round-adjusted/<year>' )
+def pts_per_rnd_adjusted (year):
+	# print (year)
+	pass
+
+@app.route ( '/team/laptimes/<year>/<rnd>' )
+def team_race_laptimes (year, rnd):
+	year, rnd = process_year_round (year=year, rnd=rnd)
+	q = """
+	SELECT c.name, l.lap * 10000 + l."driverId" as lap, round(l.milliseconds/1000.0, 3) as seconds
+	FROM "lapTimes" as l
+	INNER JOIN "races" as ra ON ra."raceId"=l."raceId"
+	INNER JOIN "results" as re ON l."driverId"=re."driverId" AND ra."raceId"=re."raceId"
+	INNER JOIN "constructors" AS c ON c."constructorId"=re."constructorId" 
+	WHERE ra.year={yr} AND ra.round={rnd}
+	""".format (yr=year, rnd=rnd)
+	q = postgres_pivot_json ( q, "name", "lap", "seconds", data_col_name="laptimes" )
+	res, cols = query ( q )
+	response = dictify ( res, cols, custom_attrs={'year':year, 'round':rnd} )
+	return dumps ( response )
 
 
 
@@ -178,4 +198,4 @@ def get_seasons () :		# SELECT year FROM seasons ORDER BY year DESC - get ALL ye
 
 # launch server with: python server.py
 if __name__ == "__main__":
-    app.run( host='0.0.0.0', port=6969 )
+    app.run( host='::', port=6969 )
