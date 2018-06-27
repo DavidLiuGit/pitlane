@@ -23,7 +23,7 @@ import {
 import { 
 	laptimeInSeconds, laptimeAsBullshitDate,
 	getElementHeight, getElementWidth, 
-	process_object_to_array, mergeDeep
+	process_object_to_array, mergeDeep, isOutlier, boxplotAnalysis,
 } from '../common-functions';
 
 
@@ -43,7 +43,7 @@ class DriverWrapper extends ExtensiblePageWrapperComponent {
 				
 				<FastestLapByDriver seasons={this.state.seasons} rounds={this.state.rounds}/><hr />
 				<DriverProgression seasons={this.state.seasons} /><hr />
-				<DriverLaptimes seasons={this.state.seasons} rounds={this.state.rounds} /><hr />
+				<DriverLaptimes seasons={this.state.seasons} rounds={this.state.rounds} />
 			</div>
 		);
 	}
@@ -265,6 +265,7 @@ class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
 					{ this.elementRoundSelect () }
 					<span>
 						<button className="btn pill primary transition-0-15" onClick={this.do_request.bind(this)} >Change Race</button>
+						<button className="btn pill primary transition-0-15" onClick={this.eliminateOutliers.bind(this)}>Remove outliers</button>
 					</span>
 				</span>
 
@@ -290,6 +291,20 @@ class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
 		}).catch ( err => { 
 			console.error(err); 
 		});
+	}
+
+	/**
+	 * Remove outlier data points from box-plot data arrays
+	 */
+	eliminateOutliers () {
+		if ( !this.state.plotData )	return;			// make sure we have data to work with
+		console.log ( this.state.plotData );
+		let newPlotData = this.state.plotData.map ( driverData => {
+			let res = boxplotAnalysis ( driverData.x );						// results of boxplot analysis
+			driverData.x = driverData.x.filter ( val => !isOutlier(val, res.q1, res.q3) );
+			return driverData;
+		});
+		this.setState ({plotData: newPlotData});
 	}
 }
 
