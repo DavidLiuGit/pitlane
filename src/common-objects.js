@@ -58,7 +58,7 @@ var FastestLap = {
 
 // beginning of the URL where we will make our API calls
 var httpBaseUrl = "http://ergast.com/api/f1/";
-var pitlaneApiBaseurl = "http://localhost:6969/";
+var pitlaneApiBaseurl = "http://[fd00:a84e:3f4e:b5f2:d142:ac8a:c815:70db]:6969/";
 
 
 

@@ -50,6 +50,19 @@ class RaceNavigator extends ExtensibleNavigatorComponent {
 }
 
 
+class RaceResults extends ExtensibleDataComponentWithRoundFetch {
+	
+	constructor () {
+		super();
+	}
+	
+	reqpath = "race/results";
+	do_request () {
+		// var url = pitlaneApiBaseurl + this.reqpath + `/${this.state.sea}`
+	}
+}
+
+
 class QualifyingLaptimeByRound extends ExtensibleDataComponentWithRoundFetch {
 	reqpath 					= "race/quali_laptimes";
 	chartContainerId	= "qualifying-lap-time-by-round-chart-container";
