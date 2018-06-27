@@ -121,3 +121,62 @@ export function mergeDeep (...objects) {
 }
 
 
+
+/**
+ * Determine the median of an array of numbers
+ * @param {number[]} arr input array; does not need to be sorted
+ */
+export function computeMedian (arr) {
+	let a = arr.sort();
+	let len = a.length;
+	let mIndex = Math.floor (len % 2);
+
+	if ( len % 2 )			// if the array has an odd-number of elements,
+		return a[mIndex];		// then we can simply return the value at the median
+	else					// but if the array has an even-number of elements,
+		return (a[mIndex-1] + a[mIndex]) / 2.0;		// return the mean of the 2 values in the middle
+}
+
+
+/**
+ * Analyze an array of numbers that will be in a box plot
+ * @param {number[]} arr input array; does not need to be sorted
+ */
+export function boxplotAnalysis (arr) {
+	let ret = {
+		median: NaN, q1: NaN, q3: NaN,	// initialize result obj, where median, Q1, Q3 are initially undefined
+		sortedArr: arr.sort()			// sort array before processing it
+	}
+
+	// determine the indices where the median value is, and where the 
+	let len = ret.sortedArr.length;				// get the length of the sorted array
+	let medianFloor = Math.floor(len/2), medianCeil = Math.ceil(len/2);
+
+	ret.median = computeMedian(ret.sortedArr);					// calculate the median value
+	ret.q1 = computeMedian(ret.sortedArr.slice(0,medianFloor));	// calculate q1
+	ret.q3 = computeMedian(ret.sortedArr.slice(medianCeil));	// calculate q3
+	return ret;
+}
+
+
+/**
+ * Determine if a value should be considerd an outlier, given a Q1 and Q3
+ * @param {number} value value to be evaluated
+ * @param {number} q1 median value of the lower half
+ * @param {number} q3 median value of the upper half
+ * @param {boolean} inclusive if a value is found to be right on the edge, should it be included?
+ * @param {number} c IQR multiplier value; default 1.5
+ * @returns {boolean} true if the value is an outlier, false otherwise
+ */
+export function isOutlier (value, q1, q3, inclusive=true, c=1.5) {
+	let iqr = q3 - q1;		// inter-quartile range is the difference between q3 and q1
+	if ( inclusive ) {		// if inclusive
+		if ( value < q1 - c * iqr || value > q3 + c * iqr ) 
+			return true;	// then return true only if value is actually outside of the range
+		else return false;
+	} else {
+		if ( value <= q1 - c * iqr || value >= q3 + c * iqr )
+			return true;
+		else return false;
+	}
+}
