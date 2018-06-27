@@ -300,7 +300,11 @@ class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
 		if ( !this.state.plotData )	return;			// make sure we have data to work with
 		let newPlotData = this.state.plotData.map ( driverData => {
 			let res = boxplotAnalysis ( driverData.x );						// results of boxplot analysis
-			driverData.x = driverData.x.filter ( val => !isOutlier(val, res.q1, res.q3) );
+
+			// keep only lap times that are LTE the upper fence 
+			// to do this, we filter the array to keep only values that are either LTE q3, or is not considered an outlier
+			// consequently, the filter expression evaluates to false for only values greater than the upper fence
+			driverData.x = driverData.x.filter ( val => val <= res.q3 || !isOutlier(val, res.q1, res.q3) );
 			return driverData;
 		});
 		this.setState ({plotData: newPlotData});
