@@ -198,4 +198,4 @@ def get_seasons () :		# SELECT year FROM seasons ORDER BY year DESC - get ALL ye
 
 # launch server with: python server.py
 if __name__ == "__main__":
-    app.run( host='0.0.0.0', port=6969 )
+    app.run( host='::', port=6969 )
