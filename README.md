@@ -13,12 +13,14 @@ Statistics by driver:
 * lap times for each race as box-and-whiskers plot
 * average lap times for each race in season
 * points earned for each race in season
-* career points-per-race under current points system
 
 Statistics by team
-* all of the same statistics that can be found by driver, but aggregated by team
+<!-- * all of the same statistics that can be found by driver, but aggregated by team -->
+* lap tiems for each race as box-and-whiskers plot
 * points raced progression throughout the season
 * points earned per season
+* points-per-race under current points system
+* 
 
 
 ## 3rd party dependencies

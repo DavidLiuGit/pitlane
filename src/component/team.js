@@ -8,8 +8,9 @@ import Plot from 'react-plotly.js';
 
 // img
 import imgRace from '../img/race.jpg';
-import imgVettel from '../img/vettel.jpg';
-import imgRedBull from '../img/redbull.jpg';
+// import imgVettel from '../img/vettel.jpg';
+// import imgRedBull from '../img/redbull.jpg';
+import svgLaptime from '../img/laptime.svg';
 import svgTeamTrophy from '../img/constructor-trophy.svg';
 
 // material ui
@@ -19,10 +20,11 @@ import Button from 'material-ui/Button';
 import {
 	Driver, Constructor, Time, Timings, httpBaseUrl, FastestLap, 
 	pitlaneApiBaseurl, 
-	ExtensibleDataComponent, ExtensibleNavigatorComponent, ExtensiblePageWrapperComponent
+	ExtensibleDataComponent, ExtensibleNavigatorComponent, ExtensiblePageWrapperComponent,
+	ExtensibleDataComponentWithRoundFetch, 
 }	from '../common-objects';
 import {
-	getElementHeight, getElementWidth, 
+	getElementHeight, getElementWidth, mergeDeep, process_object_to_array
 } from '../common-functions';
 
 
@@ -48,6 +50,7 @@ class TeamWrapper extends ExtensiblePageWrapperComponent {
 				
 				<TeamStandings seasons={this.state.seasons} /><hr/>
 				<TeamProgression seasons={this.state.seasons} /><hr/>
+				<TeamLaptimes seasons={this.state.seasons} rounds={this.state.rounds} />
 
 			</div>
 		);
@@ -65,6 +68,7 @@ class TeamNavigator extends ExtensibleNavigatorComponent {
 				<div  className="flex-container flex-space-around component">
 					{ this.getNavCard ( '/team/standings', 'Standings', imgRace ) }
 					{ this.getNavCard ( '/team/progression', 'Points Progression', svgTeamTrophy ) }
+					{ this.getNavCard ( '/driver/laptimes', 'Laptimes', svgLaptime ) }
 				</div>
 			</div>
 		);
@@ -267,5 +271,76 @@ class TeamStandings extends ExtensibleDataComponent {
 
 
 
+class PointsPerRoundAdjusted extends ExtensibleDataComponent {
+	chartContainerId = "pts-per-rnd-adjusted-chart-container";
+
+	/**
+	 * This component graphs each team's points-per-race, if points were awarded using the current system
+	 */
+	constructor () {
+		super();
+
+		this.state = {
+
+		}
+	}
+
+	reqpath = 'team/points-per-round-adjusted';
+	do_request () {
+		let url = pitlaneApiBaseurl + this.reqpath  ;
+	}
+}
+
+
+class TeamLaptimes extends ExtensibleDataComponentWithRoundFetch {
+	reqpath = "team/laptimes/";
+	chartContainerId= "team-race-laptime-chart-container";
+
+	constructor () {
+		super ();
+		this.state = {
+			chartType: "box",
+			containerHeight: 100, containerWidth: 100,			// set initial values of plot container dimensions
+			seasonSelected: "current", roundSelected: "last",
+			rounds: {},
+		};
+	}
+
+	render () {
+		return (
+			<div id="team-race-laptime-component" className="flex-container-column full-height">
+				<h2>Team Lap Times</h2>
+				<span className="align-left options-bar flex-container">
+					{ this.elementSeasonSelect () }
+					{ this.elementRoundSelect () }
+					<span>
+						<button className="btn pill primary transition-0-15" onClick={this.do_request.bind(this)} >Change Race</button>
+					</span>
+				</span>
+
+				<div id={this.chartContainerId} className="flex-grow-3">
+					<Plot
+						data={ this.state.plotData }
+						layout={{
+							autosize:true, width: this.state.containerWidth, height: this.state.containerHeight,
+							title: "Team Lap Times: " + this.state.season + ' round ' + this.state.round,
+							xaxis: { title: "Lap Time (s)" }, 
+						}}
+					/>
+				</div>
+			</div>
+		);
+	}
+
+	do_request () {
+		var url = pitlaneApiBaseurl + this.reqpath + `${this.state.seasonSelected}/${this.state.roundSelected}`;
+		axios.get ( url ).then ( res => {
+			var processed_data = process_object_to_array ( res.data.name, res.data.laptimes, "box-horizontal", {boxpoints: 'all', pointpos: 0,} );
+			this.setState ( {plotData: processed_data, season: res.data.year, round: res.data.round } );
+		}).catch ( err => { 
+			console.error(err); 
+		});
+	}
+}
 
 export default TeamWrapper;

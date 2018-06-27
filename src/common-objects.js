@@ -68,6 +68,15 @@ var pitlaneApiBaseurl = "http://localhost:6969/";
 
 // extensible charting component - this is an abstract class and should not be rendered
 class ExtensibleDataComponent extends Component {
+	constructor () {
+		super();
+		this.state = this.defaultState;
+	}
+	defaultState = {
+		containerHeight: 100, containerWidth: 100,			// set initial values of plot container dimensions
+		seasonSelected: "current"		
+	}
+
 	chartContainerId = ""
 	pushStateChartContainerSize () {
 		this.setState({
@@ -104,6 +113,16 @@ class ExtensibleDataComponent extends Component {
 
 // another extensible chart - this one adds support for fetching year_round_lut lookups
 class ExtensibleDataComponentWithRoundFetch extends ExtensibleDataComponent {
+	defaultState = {
+		containerHeight: 100, containerWidth: 100,			// set initial values of plot container dimensions
+		seasonSelected: "current", roundSelected: "last",
+		rounds: {},
+	}
+	constructor() {
+		super();
+		this.state = this.defaultState;
+	}
+
 	fetchRacesInYear ( year ) {
 		console.log ( "fetching rnds for " + year );
 		var url = pitlaneApiBaseurl + `year_round_lut/${year}`;

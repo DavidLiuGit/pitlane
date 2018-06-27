@@ -21,9 +21,9 @@ import {
 	ExtensiblePageWrapperComponent, ExtensibleDataComponentWithRoundFetch
 }	from '../common-objects';
 import { 
-	laptimeInSeconds, laptimeAsBullshitDate, liWrap,
+	laptimeInSeconds, laptimeAsBullshitDate,
 	getElementHeight, getElementWidth, 
-	process_object_to_array
+	process_object_to_array, mergeDeep, isOutlier, boxplotAnalysis,
 } from '../common-functions';
 
 
@@ -43,7 +43,7 @@ class DriverWrapper extends ExtensiblePageWrapperComponent {
 				
 				<FastestLapByDriver seasons={this.state.seasons} rounds={this.state.rounds}/><hr />
 				<DriverProgression seasons={this.state.seasons} /><hr />
-				<DriverLaptimes seasons={this.state.seasons} rounds={this.state.rounds} /><hr />
+				<DriverLaptimes seasons={this.state.seasons} rounds={this.state.rounds} />
 			</div>
 		);
 	}
@@ -77,8 +77,7 @@ class FastestLapByDriver extends ExtensibleDataComponentWithRoundFetch {
 
 	constructor () {
 		super();
-
-		this.state = { 			// these variables will be used in rendering; initial values listed below
+		var state = {
 			race: {
 				raceName: "",
 				Circuit : { circuitName: "" },
@@ -91,9 +90,8 @@ class FastestLapByDriver extends ExtensibleDataComponentWithRoundFetch {
 				fastestLapsSeconds: "",
 				driverCodeArray: ""
 			},
-			seasonSelected: "current", roundSelected: "last",
-			rounds: {},
 		};
+		this.state = mergeDeep (state, this.defaultState);
 	}
 
 	getDriverCodeArray (results=this.state.race) {
@@ -204,6 +202,12 @@ class DriverProgression extends ExtensibleDataComponent {
 		return (
 			<div id="driver-progression-component" className="flex-container-column full-height">	
 				<h2>Driver Standings Progression</h2>
+				<span className="align-left options-bar flex-container">
+					{ this.elementSeasonSelect () }
+					<span>
+						<button className="btn pill primary transition-0-15" onClick={this.do_request.bind(this)} >Change Race</button>
+					</span>
+				</span>
 
 				<div id={this.chartContainerId} className="flex-grow-3">
 					<Plot
@@ -249,18 +253,8 @@ class DriverProgression extends ExtensibleDataComponent {
 
 
 class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
-	reqpath 				= "driver/laptimes/";
+	reqpath = "driver/laptimes/";
 	chartContainerId= "driver-race-laptime-chart-container";
-
-	constructor () {
-		super ();
-		this.state = {
-			chartType: "box",
-			containerHeight: 100, containerWidth: 100,			// set initial values of plot container dimensions
-			seasonSelected: "current", roundSelected: "last",
-			rounds: {},
-		};
-	}
 
 	render () {
 		return (
@@ -271,6 +265,7 @@ class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
 					{ this.elementRoundSelect () }
 					<span>
 						<button className="btn pill primary transition-0-15" onClick={this.do_request.bind(this)} >Change Race</button>
+						<button className="btn pill primary transition-0-15" onClick={this.eliminateOutliers.bind(this)}>Remove outliers</button>
 					</span>
 				</span>
 
@@ -296,6 +291,23 @@ class DriverLaptimes extends ExtensibleDataComponentWithRoundFetch {
 		}).catch ( err => { 
 			console.error(err); 
 		});
+	}
+
+	/**
+	 * Remove outlier data points from box-plot data arrays
+	 */
+	eliminateOutliers () {
+		if ( !this.state.plotData )	return;			// make sure we have data to work with
+		let newPlotData = this.state.plotData.map ( driverData => {
+			let res = boxplotAnalysis ( driverData.x );						// results of boxplot analysis
+
+			// keep only lap times that are LTE the upper fence 
+			// to do this, we filter the array to keep only values that are either LTE q3, or is not considered an outlier
+			// consequently, the filter expression evaluates to false for only values greater than the upper fence
+			driverData.x = driverData.x.filter ( val => val <= res.q3 || !isOutlier(val, res.q1, res.q3) );
+			return driverData;
+		});
+		this.setState ({plotData: newPlotData});
 	}
 }
 
