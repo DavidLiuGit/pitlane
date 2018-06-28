@@ -34,31 +34,6 @@ import imgRedBull from './img/redbull.jpg';
 //var httpBaseUrl = "http://ergast.com/api/f1/";
 
 
-class App extends Component {
-	render() {			
-    return (
-      <div className="App">
-
-				<Switch>
-					<Route exact path="/" component={Splash}/>
-				</Switch>
-
-				<Navbar />
-
-				<Switch>
-					<Route path="/race" component={RaceWrapper}/>
-					<Route path="/driver" component={DriverWrapper}/>
-					<Route path="/team" component={TeamWrapper}/>
-					<Route path="/" component={Body}/>
-					<Redirect to="/" />
-				</Switch>
-
-      </div>
-    );
-  }
-}
-
-
 
 class Splash extends Component {
 	render(){
@@ -245,4 +220,29 @@ class LastRace extends Component {
 
 
 
-export default App;
+export default class App extends Component {
+	render() {			
+    return (
+      <div className="App">
+
+				<Switch>
+					<Route exact path="/" component={Splash}/>
+				</Switch>
+
+				<Navbar />
+
+				<Switch>
+					<Route path="/race" component={RaceWrapper}/>
+					<Route path="/driver" component={DriverWrapper}/>
+					<Route path="/team" component={TeamWrapper}/>
+					<Route path="/" component={Body}/>
+					<Redirect to="/" />
+				</Switch>
+
+      </div>
+    );
+  }
+}
+
+
+// export default App;

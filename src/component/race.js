@@ -1,17 +1,14 @@
 // stats by race homepage
 
 // React core
-import React, { Component } from 'react';
+import React /*, { Component }*/ from 'react';
 import axios from 'axios';
-import { Link, Route, Switch, Redirect } from 'react-router-dom';
+// import { Link, Route, Switch, Redirect } from 'react-router-dom';
 import Plot from 'react-plotly.js';
 
 // img
 import svgLaptime from '../img/laptime.svg';
-import svgFastLap from '../img/fast-lap.svg';
-
-// Material-UI
-
+// import svgFastLap from '../img/fast-lap.svg';
 
 // common
 import {
