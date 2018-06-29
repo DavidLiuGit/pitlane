@@ -1,7 +1,6 @@
 // common functions/methods
-import React from 'react';
-import axios from 'axios';
-import { pitlaneApiBaseurl } from './common-objects';
+// import axios from 'axios';
+// import { pitlaneApiBaseurl } from './common-objects';
 
 
 // convert time in M:SS:mmm format to seconds (e.g. 1:24:831)
@@ -55,22 +54,22 @@ export function getElementWidth ( elementID ) {
  * @param {object} custom_attrs object containing any custom attributes that should be 
  */
 export function process_object_to_array ( group, data_col, _mode="lines+markers", custom_attrs=null ) {
-	var ret = [];
-	for ( var i = 0; i < group.length; i++ ){
+	let ret = [], obj = {};
+	for ( let i = 0; i < group.length; i++ ){
 
 		switch ( _mode ) {
 			case "lines+markers" : {
-				var obj = { mode: _mode, name:group[i], x: [], y: [] };
+				obj = { mode: _mode, name:group[i], x: [], y: [] };
 				if ( custom_attrs ) obj = Object.assign ( obj, custom_attrs );
-				for ( var attr in data_col[i] ){
+				for ( let attr in data_col[i] ){
 					obj.x.push ( attr );				
 					obj.y.push ( data_col[i][attr] );	
 				}
 				break;
 			} case "box-horizontal" : {
-				var obj = { type: "box", name:group[i], x: [] };
+				obj = { type: "box", name:group[i], x: [] };
 				if ( custom_attrs ) obj = Object.assign ( obj, custom_attrs );
-				for ( var attr in data_col[i] ) {
+				for ( let attr in data_col[i] ) {
 					obj.x.push ( data_col[i][attr] );				// we can omit the y axis value for box charts
 				}
 				break;
@@ -93,7 +92,7 @@ export function process_object_to_array ( group, data_col, _mode="lines+markers"
 * @returns {object} New object with merged key/values
 */
 export function mergeDeep (...objects) {
-	let t0 = performance.now();
+	// let t0 = performance.now();
 	const isObject = obj => obj && typeof obj === 'object';
 	
 	let res = objects.reduce((prev, obj) => {
@@ -115,7 +114,7 @@ export function mergeDeep (...objects) {
 		return prev;
 	}, {});
 
-	let t1 = performance.now();
+	// let t1 = performance.now();
 	// console.log ( 'mergeDeep took', t1 - t0, 'ms to complete' );
 	return res;
 }
@@ -153,8 +152,8 @@ export function boxplotAnalysis (arr) {
 	let medianFloor = Math.floor(len/2), medianCeil = Math.ceil(len/2);
 
 	ret.median = computeMedian(ret.sortedArr);					// calculate the median value
-	ret.q1 = computeMedian(ret.sortedArr.slice(0,medianFloor));	// calculate q1
-	ret.q3 = computeMedian(ret.sortedArr.slice(medianCeil));	// calculate q3
+	ret.q1 = computeMedian(ret.sortedArr.slice(0,medianFloor));	// calculate q1 (the median of the first half)
+	ret.q3 = computeMedian(ret.sortedArr.slice(medianCeil));	// calculate q3 (the median of the latter half)
 	return ret;
 }
 

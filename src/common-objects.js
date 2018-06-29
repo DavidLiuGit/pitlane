@@ -152,8 +152,6 @@ class ExtensibleDataComponentWithRoundFetch extends ExtensibleDataComponent {
 			this.fetchRacesInYear ( year );		// this will trigger setState; which will trigger this function again
 			return ( <option value="" disabled>Loading...</option> );		// return a loading "message"
 		}
-
-		return null;							// when nothing else works
 	}
 
 	
