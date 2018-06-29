@@ -24,7 +24,8 @@ import {
 	ExtensibleDataComponentWithRoundFetch, 
 }	from '../common-objects';
 import {
-	getElementHeight, getElementWidth, mergeDeep, process_object_to_array
+	getElementHeight, getElementWidth, mergeDeep, process_object_to_array,
+	isOutlier, boxplotAnalysis,
 } from '../common-functions';
 
 
@@ -315,6 +316,7 @@ class TeamLaptimes extends ExtensibleDataComponentWithRoundFetch {
 					{ this.elementRoundSelect () }
 					<span>
 						<button className="btn pill primary transition-0-15" onClick={this.do_request.bind(this)} >Change Race</button>
+						<button className="btn pill primary transition-0-15" onClick={this.eliminateOutliers.bind(this)}>Remove outliers</button>
 					</span>
 				</span>
 
@@ -340,6 +342,23 @@ class TeamLaptimes extends ExtensibleDataComponentWithRoundFetch {
 		}).catch ( err => { 
 			console.error(err); 
 		});
+	}
+
+	/**
+	 * Remove outlier data points from box-plot data arrays
+	 */
+	eliminateOutliers () {
+		if ( !this.state.plotData )	return;			// make sure we have data to work with
+		let newPlotData = this.state.plotData.map ( teamData => {
+			let res = boxplotAnalysis ( teamData.x );						// results of boxplot analysis
+
+			// keep only lap times that are LTE the upper fence 
+			// to do this, we filter the array to keep only values that are either LTE q3, or is not considered an outlier
+			// consequently, the filter expression evaluates to false for only values greater than the upper fence
+			teamData.x = teamData.x.filter ( val => val <= res.q3 || !isOutlier(val, res.q1, res.q3) );
+			return teamData;
+		});
+		this.setState ({plotData: newPlotData});
 	}
 }
 
